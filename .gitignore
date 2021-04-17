@@ -1,0 +1,12 @@
+.DS_Store
+**/__pycache__/
+**/.vscode/
+**/*.code-workspace
+**/*.tar
+**/*.tar.gz
+**/*.zip
+**/*.png
+**/node_modules/
+**/*.mp4
+
+
