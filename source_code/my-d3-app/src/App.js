@@ -12,16 +12,20 @@ class App extends Component {
         super(props);
 
         this.state = {
-            screePlotData: [],
-            biplotData: {},
-            topSignificantFeatures: [],
-            intrinsicDimensionalityIndex: 0,
-            scatterPlotData: [],
+            data: {},
         }
     }
 
     componentDidMount() {
-
+        fetch("/data_info")
+            .then(res => res.json())
+            .then(
+                (res) => {
+                    this.setState({
+                        data: res
+                    })
+                }
+            )
     }
 
     render() {
