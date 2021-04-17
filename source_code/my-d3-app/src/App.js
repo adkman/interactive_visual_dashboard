@@ -13,6 +13,7 @@ class App extends Component {
 
         this.state = {
             data: {},
+            features: [],
         }
     }
 
@@ -22,8 +23,10 @@ class App extends Component {
             .then(
                 (res) => {
                     this.setState({
-                        data: res
+                        data: res['rawData'],
+                        features: res['features'],
                     })
+                    console.log(res);
                 }
             )
     }

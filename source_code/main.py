@@ -27,14 +27,12 @@ def load_data(csv_path):
     global raw_numerical_data_df, raw_data_df, scaled_data, numerical_data_columns, data_columns
 
     raw_data_df = pd.read_csv(csv_path)
-    del raw_data_df["ID"]
-    del raw_data_df["Name"]
     data_columns = raw_data_df.columns
 
-    numerical_data_columns = data_columns[4:]
+    # numerical_data_columns = data_columns[4:]
 
-    raw_numerical_data_df = pd.DataFrame(
-        raw_data_df[numerical_data_columns], columns=numerical_data_columns)
+    # raw_numerical_data_df = pd.DataFrame(
+    #     raw_data_df[numerical_data_columns], columns=numerical_data_columns)
 
 
 def kmeans(raw_numerical_data_df):
@@ -114,14 +112,14 @@ def data_info():
 
     load_data(dataset_path)
 
-    clusters = kmeans(raw_numerical_data_df)
+    # clusters = kmeans(raw_numerical_data_df)
 
     return {
         'features': data_columns.tolist(),
         'rawData': raw_data_df.to_dict(orient='records'),
-        'numericalFeatures': numerical_data_columns.tolist(),
-        'rawNumericalData': raw_numerical_data_df.to_dict(orient='records'),
-        'kmeansClusters': clusters.tolist(),
+        # 'numericalFeatures': numerical_data_columns.tolist(),
+        # 'rawNumericalData': raw_numerical_data_df.to_dict(orient='records'),
+        # 'kmeansClusters': clusters.tolist(),
     }
 
 
