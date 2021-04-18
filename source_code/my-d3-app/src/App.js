@@ -12,8 +12,10 @@ class App extends Component {
         super(props);
 
         this.state = {
-            data: {},
-            features: [],
+            explosionsData: {},
+            explosionsFeatures: [],
+            inventoryData: {},
+            inventoryFeatures: [],
         }
     }
 
@@ -23,8 +25,10 @@ class App extends Component {
             .then(
                 (res) => {
                     this.setState({
-                        data: res['rawData'],
-                        features: res['features'],
+                        explosionsData: res["explosionsRawData"],
+                        explosionsFeatures: res["explosionsFeatures"],
+                        inventoryData: res["inventoryFeatures"],
+                        inventoryFeatures: res["inventoryRawData"],
                     })
                     console.log(res);
                 }
