@@ -20,19 +20,15 @@ eigen_vectors = None
 pcs = ['PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6',
        'PC7', 'PC8', 'PC9', 'PC10', 'PC11', 'PC12']
 
-dataset_path = "data/dataset.csv"
+nuclear_explosions_dataset_path = "data/nuclear_explosions.csv"
+nuclear_inventory_dataset_path = "data/nuclear_inventory.csv"
 
 
 def load_data(csv_path):
-    global raw_numerical_data_df, raw_data_df, scaled_data, numerical_data_columns, data_columns
-
     raw_data_df = pd.read_csv(csv_path)
     data_columns = raw_data_df.columns
 
-    # numerical_data_columns = data_columns[4:]
-
-    # raw_numerical_data_df = pd.DataFrame(
-    #     raw_data_df[numerical_data_columns], columns=numerical_data_columns)
+    return raw_data_df, data_columns
 
 
 def kmeans(raw_numerical_data_df):
@@ -108,27 +104,19 @@ def index():
 
 @app.route('/data_info')
 def data_info():
-    global dataset_path, data_columns, raw_data_df, numerical_data_columns, raw_numerical_data_df
-
-    load_data(dataset_path)
-
-    # clusters = kmeans(raw_numerical_data_df)
+    explosions_data_df, explosions_data_features = load_data(nuclear_explosions_dataset_path)
+    inventory_data_df, inventory_data_features = load_data(nuclear_inventory_dataset_path)
 
     return {
-        'features': data_columns.tolist(),
-        'rawData': raw_data_df.to_dict(orient='records'),
-        # 'numericalFeatures': numerical_data_columns.tolist(),
-        # 'rawNumericalData': raw_numerical_data_df.to_dict(orient='records'),
-        # 'kmeansClusters': clusters.tolist(),
+        'explosionsFeatures': explosions_data_features.tolist(),
+        'explosionsRawData': explosions_data_df.to_dict(orient='records'),
+        'inventoryFeatures': inventory_data_features.tolist(),
+        'inventoryRawData': inventory_data_df.to_dict(orient='records'),
     }
 
 
 @app.route('/pca_info')
 def pca_info():
-    global dataset_path
-    if raw_numerical_data_df.empty:
-        load_data(dataset_path)
-
     eigen_vectors, pca_loadings_df_, pcaVarRatio = pca()
 
     biplotData = biplot(pca_loadings_df_, eigen_vectors)
@@ -153,11 +141,6 @@ def top_significant_features():
 
 @app.route('/mds_info')
 def mds_info():
-    global dataset_path, raw_numerical_data_df
-
-    if raw_numerical_data_df.empty:
-        load_data(dataset_path)
-
     data_mds = dataMDS(raw_numerical_data_df)
 
     variable_mds = variableMDS(raw_numerical_data_df)
