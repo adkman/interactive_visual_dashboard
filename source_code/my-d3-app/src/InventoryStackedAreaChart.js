@@ -27,7 +27,7 @@ class InventoryStackedAreaChart extends Component {
 
     drawChart = () => {
 
-        const {inventoryData, inventoryFeatures} = this.props;
+        const {inventoryData, inventoryFeatures, colorScale} = this.props;
 
         if(inventoryData.length===0 || inventoryFeatures.length===0){
             return
@@ -51,10 +51,6 @@ class InventoryStackedAreaChart extends Component {
             .y0(d => y(d[0]))
             .y1(d => y(d[1]))
 
-        const color = d3.scaleOrdinal()
-            .domain(inventoryFeatures.slice(1))
-            .range(d3.schemeCategory10)
-        
         const xAxis = g => g
             .attr("transform", `translate(0,${this.height - margin.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
@@ -104,7 +100,7 @@ class InventoryStackedAreaChart extends Component {
             .selectAll("path")
             .data(series)
             .join("path")
-            .attr("fill", ({key}) => color(key))
+            .attr("fill", ({key}) => colorScale(key))
             .attr("d", area)
             .append("title")
             .text(({key}) => key);

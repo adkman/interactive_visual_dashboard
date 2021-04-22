@@ -89,7 +89,6 @@ class App extends Component {
                     <Row>
                         <Col className="main-col-cards" sm={3}>
                             <Card style={{ height: "49vh" }}>
-
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
@@ -102,6 +101,7 @@ class App extends Component {
                                 <InventoryStackedAreaChart
                                     inventoryData={this.state.inventoryData}
                                     inventoryFeatures={this.state.inventoryFeatures}
+                                    colorScale={this.colorScale}
                                 />
                             </Card>
                         </Col>
