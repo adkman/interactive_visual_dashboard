@@ -34,7 +34,7 @@ class WorldBubbleMap extends Component {
 
         const {
             explosionsData,
-            features,
+            colorScale,
             plotTitle,
         } = this.props;
 
@@ -59,10 +59,6 @@ class WorldBubbleMap extends Component {
         const magScale = d3.scaleLinear()
             .domain(d3.extent(data, d => d.magnitude_body))
             .range([3, 15]);
-
-        const colorScale = d3.scaleOrdinal()
-            .domain(data.map(d => d.country))
-            .range(d3.schemeSet2)
 
         const svg = d3.select("#" + Constants.WORLD_MAP_SVG_CONTAINER_ID)
             .append("svg")

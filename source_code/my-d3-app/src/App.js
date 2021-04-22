@@ -4,11 +4,13 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import './App.css';
-import { LABEL } from './locale/en-us';
-import WorldBubbleMap from './WorldBubbleMap';
 import InventoryStackedAreaChart from './InventoryStackedAreaChart';
+import WorldBubbleMap from './WorldBubbleMap';
+import * as d3 from "d3";
 
 class App extends Component {
+
+    colorScale;
 
     constructor(props) {
         super(props);
@@ -19,6 +21,10 @@ class App extends Component {
             inventoryData: [],
             inventoryFeatures: [],
         }
+
+        this.colorScale = d3.scaleOrdinal()
+            .domain(this.state.explosionsData.map(d => d.country))
+            .range(d3.schemeSet2)
     }
 
     componentDidMount() {
@@ -33,6 +39,10 @@ class App extends Component {
                         inventoryFeatures: res["inventoryFeatures"],
                     })
                     console.log(res);
+
+                    this.colorScale = d3.scaleOrdinal()
+                        .domain(this.state.explosionsData.map(d => d.country))
+                        .range(d3.schemeSet2)
                 }
             )
     }
@@ -67,6 +77,7 @@ class App extends Component {
                             <Card style={{ height: "50vh" }}>
                                 <WorldBubbleMap
                                     explosionsData={this.state.explosionsData}
+                                    colorScale={this.colorScale}
                                 />
                             </Card>
                         </Col>
@@ -84,10 +95,10 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={5}>
                             <Card style={{ height: "49vh" }}>
-                            <InventoryStackedAreaChart
-                                inventoryData={this.state.inventoryData}
-                                inventoryFeatures={this.state.inventoryFeatures}
-                            />
+                                <InventoryStackedAreaChart
+                                    inventoryData={this.state.inventoryData}
+                                    inventoryFeatures={this.state.inventoryFeatures}
+                                />
                             </Card>
                         </Col>
                     </Row>
