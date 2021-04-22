@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import './App.css';
 import { LABEL } from './locale/en-us';
 import WorldBubbleMap from './WorldBubbleMap';
+import InventoryStackedAreaChart from './InventoryStackedAreaChart';
 
 class App extends Component {
 
@@ -28,8 +29,8 @@ class App extends Component {
                     this.setState({
                         explosionsData: res["explosionsRawData"],
                         explosionsFeatures: res["explosionsFeatures"],
-                        inventoryData: res["inventoryFeatures"],
-                        inventoryFeatures: res["inventoryRawData"],
+                        inventoryData: res["inventoryRawData"],
+                        inventoryFeatures: res["inventoryFeatures"],
                     })
                     console.log(res);
                 }
@@ -76,14 +77,17 @@ class App extends Component {
 
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={6}>
+                        <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "49vh" }}>
 
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={3}>
+                        <Col className="main-col-cards" sm={5}>
                             <Card style={{ height: "49vh" }}>
-
+                            <InventoryStackedAreaChart
+                                inventoryData={this.state.inventoryData}
+                                inventoryFeatures={this.state.inventoryFeatures}
+                            />
                             </Card>
                         </Col>
                     </Row>
