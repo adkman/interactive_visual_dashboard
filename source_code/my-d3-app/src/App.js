@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import './App.css';
 import InventoryStackedAreaChart from './InventoryStackedAreaChart';
 import WorldBubbleMap from './WorldBubbleMap';
+import BarchartCountries from './BarchartCountries'
 import * as d3 from "d3";
 
 class App extends Component {
@@ -45,7 +46,7 @@ class App extends Component {
 
                     this.colorScale = d3.scaleOrdinal()
                         .domain(nuclearCountries)
-                        .range(d3.schemeSet2)
+                        .range(d3.schemeCategory10)
                 }
             )
     }
@@ -59,7 +60,10 @@ class App extends Component {
                             <Row>
                                 <Col className="main-col-cards" sm={12}>
                                     <Card style={{ height: "25vh" }}>
-
+                                        <BarchartCountries
+                                            explosionsData={this.state.explosionsData}
+                                            colorScale={this.colorScale}
+                                        />
                                     </Card>
                                 </Col>
                             </Row>

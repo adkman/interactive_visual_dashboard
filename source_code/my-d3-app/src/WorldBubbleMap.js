@@ -21,7 +21,6 @@ class WorldBubbleMap extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.explosionsData.length !== prevProps.explosionsData.length
             || this.props.explosionsData !== prevProps.explosionsData
-            || this.props.features !== prevProps.features
         ) {
             const svg = d3.select("#" + Constants.WORLD_MAP_SVG_CONTAINER_ID).select("svg");
             svg.remove();
