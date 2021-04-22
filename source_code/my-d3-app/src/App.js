@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import './App.css';
 import { LABEL } from './locale/en-us';
+import WorldBubbleMap from './WorldBubbleMap';
 
 class App extends Component {
 
@@ -12,9 +13,9 @@ class App extends Component {
         super(props);
 
         this.state = {
-            explosionsData: {},
+            explosionsData: [],
             explosionsFeatures: [],
-            inventoryData: {},
+            inventoryData: [],
             inventoryFeatures: [],
         }
     }
@@ -63,7 +64,9 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={6}>
                             <Card style={{ height: "50vh" }}>
-
+                                <WorldBubbleMap
+                                    explosionsData={this.state.explosionsData}
+                                />
                             </Card>
                         </Col>
                     </Row>
