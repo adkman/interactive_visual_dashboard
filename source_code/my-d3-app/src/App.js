@@ -20,6 +20,7 @@ class App extends Component {
             explosionsFeatures: [],
             inventoryData: [],
             inventoryFeatures: [],
+            nuclearCountries: [],
         }
 
         this.colorScale = d3.scaleOrdinal()
@@ -32,16 +33,18 @@ class App extends Component {
             .then(res => res.json())
             .then(
                 (res) => {
+                    let nuclearCountries = res["explosionsRawData"].map(d => d.country);
                     this.setState({
                         explosionsData: res["explosionsRawData"],
                         explosionsFeatures: res["explosionsFeatures"],
                         inventoryData: res["inventoryRawData"],
                         inventoryFeatures: res["inventoryFeatures"],
+                        nuclearCountries: [...new Set(nuclearCountries)],
                     })
                     console.log(res);
 
                     this.colorScale = d3.scaleOrdinal()
-                        .domain(this.state.explosionsData.map(d => d.country))
+                        .domain(nuclearCountries)
                         .range(d3.schemeSet2)
                 }
             )
@@ -78,6 +81,7 @@ class App extends Component {
                                 <WorldBubbleMap
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
+                                    nuclearCountries={this.state.nuclearCountries}
                                 />
                             </Card>
                         </Col>

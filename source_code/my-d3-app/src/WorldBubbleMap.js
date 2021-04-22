@@ -4,7 +4,6 @@ import { Component } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Constants } from './constants/Constants';
 import countries_data from './data/countries-110m.json';
-import land_data from './data/land-110m.json';
 
 class WorldBubbleMap extends Component {
 
@@ -35,7 +34,7 @@ class WorldBubbleMap extends Component {
         const {
             explosionsData,
             colorScale,
-            plotTitle,
+            nuclearCountries,
         } = this.props;
 
         const projection = d3.geoNaturalEarth1();
@@ -62,7 +61,9 @@ class WorldBubbleMap extends Component {
 
         const svg = d3.select("#" + Constants.WORLD_MAP_SVG_CONTAINER_ID)
             .append("svg")
-            .attr("viewBox", [0, 0, this.width, this.height]);
+            .attr("viewBox", [0, 0, this.width, this.height])
+            .style("max-height", "100%")
+            .style("width", "auto");
 
         const countriesGroup = svg.append("g");
 
@@ -71,8 +72,8 @@ class WorldBubbleMap extends Component {
             .selectAll("path")
             .data(countries.features)
             .join("path")
-            .attr("fill", d =>'#EBEBEF')
-            .attr("fill-opacity", 0.6)
+            .attr("fill", d => nuclearCountries.indexOf(d.properties.name) !== -1 ? colorScale(d.properties.name) :'#EBEBEF')
+            .attr("fill-opacity", d => nuclearCountries.indexOf(d.properties.name) !== -1 ? 0.3 : 0.6)
             .attr("d", path);
 
         countriesGroup
@@ -92,8 +93,9 @@ class WorldBubbleMap extends Component {
             .attr("transform", d => `translate(${d.position[0]},${d.position[1]})`)
             .attr("fill", d => colorScale(d.country))
             .attr("fill-opacity", 0.25)
-            // .attr("stroke", d => colorScale(d.country))
-            // .attr("stroke-width", 0.2)
+            .attr("stroke", d => colorScale(d.country))
+            .attr("stroke-opacity", 0.5)
+            .attr("stroke-width", 0.5)
             .attr("r", d => magScale(d.magnitude_body))
             .on("mouseover", function (e, d) {
                 d3.select(this)
