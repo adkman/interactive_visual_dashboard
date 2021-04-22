@@ -7,6 +7,7 @@ import './App.css';
 import InventoryStackedAreaChart from './InventoryStackedAreaChart';
 import WorldBubbleMap from './WorldBubbleMap';
 import * as d3 from "d3";
+import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
 
 class App extends Component {
 
@@ -87,8 +88,14 @@ class App extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col className="main-col-cards" sm={3}>
+                        <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "49vh" }}>
+                                <ExplosionsStackedAreaChart
+                                    explosionsData={this.state.explosionsData}
+                                    explosionsFeatures={this.state.explosionsFeatures}
+                                    colorScale={this.colorScale}
+                                    nuclearCountries={this.state.nuclearCountries}
+                                />
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
@@ -96,12 +103,13 @@ class App extends Component {
 
                             </Card>
                         </Col>
-                        <Col className="main-col-cards" sm={5}>
+                        <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "49vh" }}>
                                 <InventoryStackedAreaChart
                                     inventoryData={this.state.inventoryData}
                                     inventoryFeatures={this.state.inventoryFeatures}
                                     colorScale={this.colorScale}
+                                    nuclearCountries={this.state.nuclearCountries}
                                 />
                             </Card>
                         </Col>
