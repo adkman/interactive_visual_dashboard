@@ -113,7 +113,7 @@ class BarchartCountries extends Component {
                     } else if (d === "United Kingdom") {
                         return "UK";
                     } else {
-                        return
+                        return d;
                     }
                 }))
             .selectAll("text")
