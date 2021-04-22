@@ -4,13 +4,13 @@ import { Component } from 'react';
 import { Constants } from './constants/Constants';
 import { LABEL } from './locale/en-us';
 
-class InventoryStackedAreaChart extends Component {
+class ExplosionsStackedAreaChart extends Component {
 
     width;
     height;
 
     componentDidMount() {
-        const container = d3.select("#" + Constants.INVENTORY_STACKED_AREA_CHART_SVG_CONTAINER_ID);
+        const container = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID);
         this.width = container.node().getBoundingClientRect().width;
         this.height = container.node().getBoundingClientRect().height;
         this.drawChart();
@@ -18,8 +18,8 @@ class InventoryStackedAreaChart extends Component {
 
     componentDidUpdate(prevProps) {
 
-        if (this.props.inventoryData !== prevProps.inventoryData || this.props.inventoryFeatures !== prevProps.inventoryFeatures) {
-            const svg = d3.select("#" + Constants.INVENTORY_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
+        if (this.props.explosionsData !== prevProps.explosionsData || this.props.explosionsFeatures !== prevProps.explosionsFeatures) {
+            const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
             svg.remove();
             this.drawChart();
         }
@@ -27,17 +27,51 @@ class InventoryStackedAreaChart extends Component {
 
     drawChart = () => {
 
-        const {inventoryData, inventoryFeatures, colorScale, nuclearCountries} = this.props;
+        const {explosionsData, explosionsFeatures, nuclearCountries, colorScale} = this.props;
 
-        if(inventoryData.length===0 || inventoryFeatures.length===0){
+        if(explosionsData.length===0 || explosionsFeatures.length===0){
             return
         }
-        const margin = ({ top: 30, right: 20, bottom: 40, left: 60 });
+        const margin = ({ top: 30, right: 20, bottom: 40, left: 45 });
 
-        const data = inventoryData
+        console.log("start")
+        let count = 0
+        let prev_year = 0
+        let data = []
+        let dummy = {
+            "Year": 0,
+            "China": 0,
+            "France": 0,
+            "India": 0,
+            "Pakistan": 0,
+            "Russia": 0,
+            "United Kingdom": 0,
+            "United States of America": 0,
+            "North Korea": 0
+        }
+        // let dummy = Object.assign({}, nuclearCountries);
+        // dummy.Year = 0;
+        // console.log("DUM", dummy) 
+        let curr_obj = {}
+        for(let row in explosionsData){
+            count++;
+            let country = explosionsData[row].country
+            let curr_year = explosionsData[row].year
+            if(prev_year !== curr_year){
+                curr_obj["Year"] = prev_year
+                data.push(curr_obj)
+                curr_obj = JSON.parse(JSON.stringify(dummy))
+                prev_year = curr_year
+            }
+            curr_obj[country] = curr_obj[country]+1
+        }
+        data = data.slice(1)
+        console.log("data EXP", data)
         
-        const series = d3.stack().keys(inventoryFeatures.slice(1))(data)
+        console.log("NUKE", nuclearCountries)
+        const series = d3.stack().keys(nuclearCountries)(data)
 
+        console.log("series EXP", series)
         const x = d3.scaleLinear()
             .domain(d3.extent(data, d => d.Year))
             .range([margin.left, this.width - margin.right])
@@ -81,9 +115,9 @@ class InventoryStackedAreaChart extends Component {
             .attr("dy", "1em")
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .text(LABEL.NUCLEAR_STOCKPILE)
+            .text(LABEL.NUMBER_OF_EXPLOSIONS)
 
-        const svg = d3.select("#" + Constants.INVENTORY_STACKED_AREA_CHART_SVG_CONTAINER_ID)
+        const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID)
             .append("svg")
             .attr("viewBox", [0, 0, this.width, this.height]);
         
@@ -94,7 +128,7 @@ class InventoryStackedAreaChart extends Component {
             .attr("x", (this.width + margin.left) / 2)
             .attr("y", margin.top-5)
             .attr("text-anchor", "middle")
-            .text(LABEL.NUCLEAR_STOCKPILE_TREND)
+            .text(LABEL.EXPLOSION_TREND)
 
         svg.append("g")
             .selectAll("path")
@@ -114,14 +148,15 @@ class InventoryStackedAreaChart extends Component {
             .call(yAxis);
         
         svg.call(yTitle);
+
     }
 
     render() {
         return (
-            <Container fluid id={Constants.INVENTORY_STACKED_AREA_CHART_SVG_CONTAINER_ID} style={{ height: "100%", padding: 0 }} />
+            <Container fluid id={Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID} style={{ height: "100%", padding: 0 }} />
         );
     }
 
 }
 
-export default InventoryStackedAreaChart;
+export default ExplosionsStackedAreaChart;
