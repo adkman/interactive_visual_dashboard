@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import './App.css';
-import InventoryStackedAreaChart from './InventoryStackedAreaChart';
+import InventoryMultiLineChart from './InventoryMultiLineChart';
 import WorldBubbleMap from './WorldBubbleMap';
 import BarchartCountries from './BarchartCountries'
 import * as d3 from "d3";
@@ -109,7 +109,7 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "49vh" }}>
-                                <InventoryStackedAreaChart
+                                <InventoryMultiLineChart
                                     inventoryData={this.state.inventoryData}
                                     inventoryFeatures={this.state.inventoryFeatures}
                                     colorScale={this.colorScale}

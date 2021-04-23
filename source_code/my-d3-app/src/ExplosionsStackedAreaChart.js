@@ -35,7 +35,6 @@ class ExplosionsStackedAreaChart extends Component {
         const margin = ({ top: 30, right: 20, bottom: 40, left: 45 });
 
         console.log("start")
-        let count = 0
         let prev_year = 0
         let data = []
         let dummy = {
@@ -49,12 +48,8 @@ class ExplosionsStackedAreaChart extends Component {
             "United States of America": 0,
             "North Korea": 0
         }
-        // let dummy = Object.assign({}, nuclearCountries);
-        // dummy.Year = 0;
-        // console.log("DUM", dummy) 
         let curr_obj = {}
         for(let row in explosionsData){
-            count++;
             let country = explosionsData[row].country
             let curr_year = explosionsData[row].year
             if(prev_year !== curr_year){
@@ -66,12 +61,9 @@ class ExplosionsStackedAreaChart extends Component {
             curr_obj[country] = curr_obj[country]+1
         }
         data = data.slice(1)
-        console.log("data EXP", data)
-        
-        console.log("NUKE", nuclearCountries)
+
         const series = d3.stack().keys(nuclearCountries)(data)
 
-        console.log("series EXP", series)
         const x = d3.scaleLinear()
             .domain(d3.extent(data, d => d.Year))
             .range([margin.left, this.width - margin.right])
