@@ -4,7 +4,7 @@ import { Component } from 'react';
 import { Constants } from './constants/Constants';
 import { LABEL } from './locale/en-us';
 
-class StackedHorizontalBarchartType extends Component {
+class StackedHorizontalBarchartPurpose extends Component {
 
     width;
     height;
@@ -31,7 +31,7 @@ class StackedHorizontalBarchartType extends Component {
 
         const { explosionsData, colorScale, nuclearCountries } = this.props;
 
-        const margin = ({ top: 50, right: 10, bottom: 10, left: 50 });
+        const margin = ({ top: 50, right: 10, bottom: 20, left: 50 });
 
         let dataMap = new Map();
         for (let i = 0; i < explosionsData.length; i++) {
@@ -62,7 +62,9 @@ class StackedHorizontalBarchartType extends Component {
         const data_stacked = d3.stack()
             .keys(nuclearCountries)
             (data_grouped)
-            .map(d => (d.forEach(v => v.key = d.key), d))
+            .map(d => (d.forEach(v => v.key = d.key), d));
+
+        console.log("Stacked: Purpose data", data_stacked);
 
         const xMax = d3.max(data_stacked, d => d3.max(d, d => d[1]));
         const xScale = d3.scaleLinear()
@@ -81,7 +83,7 @@ class StackedHorizontalBarchartType extends Component {
             .attr("font-size", "10")
             .attr("text-anchor", "end");
 
-        this.drawAxes(svg, xScale, yScale, LABEL.TYPE, LABEL.COUNTS, this.height, this.width, margin, data_stacked.length);
+        this.drawAxes(svg, xScale, yScale, LABEL.PURPOSE, LABEL.COUNTS, this.height, this.width, margin, data_stacked.length);
 
         svg.append("g")
             .selectAll("g")
@@ -126,7 +128,6 @@ class StackedHorizontalBarchartType extends Component {
         margin,
         num_categories) => {
 
-
         const xAxis = g => g
             .attr("transform", `translate(0,${margin.top})`)
             .call(d3.axisTop(xScale)
@@ -136,7 +137,7 @@ class StackedHorizontalBarchartType extends Component {
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", (width - margin.right) / 2)
-            .attr("y", height)
+            .attr("y", margin.top - 30)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(xTitleTxt)
@@ -178,4 +179,4 @@ class StackedHorizontalBarchartType extends Component {
 
 }
 
-export default StackedHorizontalBarchartType;
+export default StackedHorizontalBarchartPurpose;

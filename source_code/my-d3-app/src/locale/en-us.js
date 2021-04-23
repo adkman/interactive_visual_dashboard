@@ -8,4 +8,5 @@ export const LABEL = {
     NUMBER_OF_EXPLOSIONS: "Number of Explosions",
     EXPLOSION_TREND: "Explosion Trend",
     TYPE: "Method of Deployment",
+    PURPOSE: "Purpose",
 }

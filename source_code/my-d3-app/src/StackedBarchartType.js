@@ -59,7 +59,9 @@ class StackedBarchartType extends Component {
         const data_stacked = d3.stack()
             .keys(nuclearCountries)
             (data_grouped)
-            .map(d => (d.forEach(v => v.key = d.key), d))
+            .map(d => (d.forEach(v => v.key = d.key), d));
+
+        console.log("Stacked: Type data", data_stacked);
 
         const xScale = d3.scaleBand()
             .domain(Array.from(dataMap.keys()))

@@ -9,7 +9,7 @@ import BarchartCountries from './BarchartCountries';
 import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
 import InventoryMultiLineChart from './InventoryMultiLineChart';
 import StackedBarchartType from './StackedBarchartType';
-import StackedHorizontalBarchartType from './StackedHorizontalBarchartType';
+import StackedHorizontalBarchartPurpose from './StackedHorizontalBarchartPurpose';
 import WorldBubbleMap from './WorldBubbleMap';
 
 class App extends Component {
@@ -84,7 +84,7 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={3}>
                             <Card style={{ height: "50vh" }}>
-                                <StackedHorizontalBarchartType
+                                <StackedHorizontalBarchartPurpose
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.nuclearCountries}
