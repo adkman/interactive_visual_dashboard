@@ -38,13 +38,8 @@ class StackedHorizontalBarchartPurpose extends Component {
             let purposes = explosionsData[i].purpose.split("/");
             for (let j = 0; j < purposes.length; j++) {
                 if (dataMap.has(purposes[j])) {
-                    let country = explosionsData[i].country;
                     let purpose = dataMap.get(purposes[j]);
-                    if (!!purpose[country]) {
-                        purpose[country] += 1;
-                    } else {
-                        purpose[country] = 1;
-                    }
+                    purpose[explosionsData[i].country] += 1;
                     dataMap.set(purposes[j], purpose);
                 } else {
                     let purpose = {

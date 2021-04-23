@@ -36,13 +36,8 @@ class StackedBarchartType extends Component {
         let dataMap = new Map();
         for (let i = 0; i < explosionsData.length; i++) {
             if (dataMap.has(explosionsData[i].type)) {
-                let country = explosionsData[i].country;
                 let typeData = dataMap.get(explosionsData[i].type);
-                if (!!typeData[country]) {
-                    typeData[country] += 1;
-                } else {
-                    typeData[country] = 1;
-                }
+                typeData[explosionsData[i].country] += 1;
                 dataMap.set(explosionsData[i].type, typeData);
             } else {
                 let typeData = {

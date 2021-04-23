@@ -625,7 +625,7 @@ date_long,year,id_no,country,region,source,latitude,longitude,magnitude_body,mag
 19640606,1964,64014,Russia,SEMI KAZAKH,MTM,50,78,0,0,0,0.001,20,FMS,UNKNOWN,Underground
 19640611,1964,64015,United States of America,NTS,UGS,37.2,-116.1,0,0,0,0,20,PNE,ACE,Underground
 19640612,1964,64052,United States of America,NTS,DOE,37,-116,0,0,0,0,20,WR,BITTERLING,Underground
-19640615,1964,64016,France,IN ECKER ALG,DOE,24.067,5.034,0,0,0,0,5,UNKNOWN,TOPAZE,Underground
+19640615,1964,64016,France,IN ECKER ALG,DOE,24.067,5.034,0,0,0,0,5,WR,TOPAZE,Underground
 19640618,1964,64053,United States of America,NTS,DOE,37,-116,0,0,0,0,20,WR,DUFFER,Underground
 19640625,1964,64017,United States of America,NTS,UGS,37.1,-116.1,0,0,0,0,20,WR,FADE,Underground
 19640630,1964,64018,United States of America,NTS,UGS,37.2,-116.1,0,0,0,0,20,PNE,DUB,Underground
