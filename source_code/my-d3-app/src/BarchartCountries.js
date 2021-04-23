@@ -66,14 +66,12 @@ class BarchartCountries extends Component {
             .data(categorized_data)
             .join("rect")
             .attr("fill", d => colorScale(d['category']))
-            .attr("fill-opacity", 0.6)
+            // .attr("fill-opacity", 0.6)
             .attr("x", d => xScale(d['category']) + xScale.bandwidth() / 4)
             .attr("y", d => yScale(d['count']))
             .attr("height", d => yScale(0) - yScale(d['count']))
             .attr("width", xScale.bandwidth() / 2)
             .on("mouseover", function (e, d) {
-                d3.select(this)
-                    .attr("fill-opacity", 1);
                 d3.select(this.parentNode)
                     .append('text')
                     .text(d['count'])
@@ -85,8 +83,6 @@ class BarchartCountries extends Component {
                     .attr("id", "temp_bar_chart_val")
                     .attr("fill", colorScale(d['category']));
             }).on("mouseout", function (e, d) {
-                d3.select(this)
-                    .attr("fill-opacity", 0.6);
                 d3.select("#temp_bar_chart_val").remove();
             });
     }
@@ -132,7 +128,7 @@ class BarchartCountries extends Component {
 
         const yAxis = g => g
             .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(yScale))
+            .call(d3.axisLeft(yScale).tickSizeOuter(0))
             .attr("font-size", 10)
 
         const yTitle = g => g.append("text")

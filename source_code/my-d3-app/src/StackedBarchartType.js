@@ -45,11 +45,13 @@ class StackedBarchartType extends Component {
                 }
                 dataMap.set(explosionsData[i].type, typeData);
             } else {
-                let country = explosionsData[i].country;
                 let typeData = {
                     "name": explosionsData[i].type,
-                    [country]: 1,
                 }
+                for (const country of nuclearCountries) {
+                    typeData[country] = 0;
+                }
+                typeData[explosionsData[i].country] = 1;
                 dataMap.set(explosionsData[i].type, typeData);
             }
         }
@@ -86,7 +88,7 @@ class StackedBarchartType extends Component {
             .data(data_stacked)
             .join("g")
             .attr("fill", d => colorScale(d.key))
-            .attr("fill-opacity", 0.6)
+            // .attr("fill-opacity", 0.6)
             .selectAll("rect")
             .data(d => d)
             .join("rect")
@@ -94,6 +96,13 @@ class StackedBarchartType extends Component {
             .attr("y", d => yScale(d[1]))
             .attr("height", d => yScale(d[0]) - yScale(d[1]))
             .attr("width", xScale.bandwidth())
+            // .append('text')
+            // .text("")
+            // .attr("x", d => xScale(d.data.name))
+            // .attr("y", d => yScale(d[1]) - 10)
+            // .attr("font-size", "14")
+            // .attr("font-weight", "bold")
+            // .attr("text-anchor", "middle");
             // .on("mouseover", function (e, d) {
             //     d3.select(this)
             //         .attr("fill-opacity", 1);
@@ -124,7 +133,7 @@ class StackedBarchartType extends Component {
         margin,
         num_categories) => {
 
-        let deg = num_categories >= 8 ? -30 : 0;
+        let deg = num_categories >= 8 ? -15 : 0;
         let anchor = num_categories >= 8 ? "end" : "middle";
         const xAxis = g => g
             .attr("transform", `translate(0,${height - margin.bottom})`)
@@ -146,7 +155,7 @@ class StackedBarchartType extends Component {
 
         const yAxis = g => g
             .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(yScale))
+            .call(d3.axisLeft(yScale).tickSizeOuter(0))
             .attr("font-size", 9)
 
         const yTitle = g => g.append("text")

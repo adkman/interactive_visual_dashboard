@@ -47,11 +47,13 @@ class StackedHorizontalBarchartPurpose extends Component {
                     }
                     dataMap.set(purposes[j], purpose);
                 } else {
-                    let country = explosionsData[i].country;
                     let purpose = {
                         "name": purposes[j],
-                        [country]: 1,
                     }
+                    for (const country of nuclearCountries) {
+                        purpose[country] = 0;
+                    }
+                    purpose[explosionsData[i].country] = 1;
                     dataMap.set(purposes[j], purpose);
                 }
             }
@@ -83,14 +85,14 @@ class StackedHorizontalBarchartPurpose extends Component {
             .attr("font-size", "10")
             .attr("text-anchor", "end");
 
-        this.drawAxes(svg, xScale, yScale, LABEL.PURPOSE, LABEL.COUNTS, this.height, this.width, margin, data_stacked.length);
+        this.drawAxes(svg, xScale, yScale, LABEL.COUNTS, LABEL.PURPOSE, this.height, this.width, margin, data_stacked.length);
 
         svg.append("g")
             .selectAll("g")
             .data(data_stacked)
             .join("g")
             .attr("fill", d => colorScale(d.key))
-            .attr("fill-opacity", 0.6)
+            // .attr("fill-opacity", 0.6)
             .selectAll("rect")
             .data(d => d)
             .join("rect")

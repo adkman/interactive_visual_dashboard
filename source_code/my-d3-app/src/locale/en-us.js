@@ -1,5 +1,5 @@
 export const LABEL = {
-    NUCLEAR_STOCKPILE: "Nuclear Stockpile",
+    NUCLEAR_STOCKPILE: "Nuclear Stockpile (Sqrt)",
     YEAR: "Year",
     NUCLEAR_STOCKPILE_TREND: "Nuclear Stockpile Trend",
     COUNTRIES: "Countries",
