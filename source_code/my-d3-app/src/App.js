@@ -1,14 +1,16 @@
+import * as d3 from "d3";
 import { Component } from 'react';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import './App.css';
-import InventoryStackedAreaChart from './InventoryStackedAreaChart';
-import WorldBubbleMap from './WorldBubbleMap';
-import BarchartCountries from './BarchartCountries'
-import * as d3 from "d3";
+import BarchartCountries from './BarchartCountries';
 import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
+import InventoryStackedAreaChart from './InventoryStackedAreaChart';
+import StackedBarchartType from './StackedBarchartType';
+import StackedHorizontalBarchartType from './StackedHorizontalBarchartType';
+import WorldBubbleMap from './WorldBubbleMap';
 
 class App extends Component {
 
@@ -71,14 +73,22 @@ class App extends Component {
                             <Row>
                                 <Col className="main-col-cards" sm={12}>
                                     <Card style={{ height: "25vh" }}>
-
+                                        <StackedBarchartType
+                                            explosionsData={this.state.explosionsData}
+                                            colorScale={this.colorScale}
+                                            nuclearCountries={this.state.nuclearCountries}
+                                        />
                                     </Card>
                                 </Col>
                             </Row>
                         </Col>
                         <Col className="main-col-cards" sm={3}>
                             <Card style={{ height: "50vh" }}>
-
+                                <StackedHorizontalBarchartType
+                                    explosionsData={this.state.explosionsData}
+                                    colorScale={this.colorScale}
+                                    nuclearCountries={this.state.nuclearCountries}
+                                />
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={6}>

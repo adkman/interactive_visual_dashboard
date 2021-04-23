@@ -59,7 +59,7 @@ class BarchartCountries extends Component {
             .attr("font-size", "10")
             .attr("text-anchor", "end");
 
-        this.drawAxes(svg, xScale, yScale, LABEL.COUNTRIES, LABEL.COUNTS, this.height, this.width, margin, categorized_data.length);
+        this.drawAxes(svg, xScale, yScale, LABEL.COUNTRIES, LABEL.COUNTS_SQRT, this.height, this.width, margin, categorized_data.length);
 
         svg.append("g")
             .selectAll("rect")
