@@ -9,4 +9,7 @@ export const LABEL = {
     EXPLOSION_TREND: "Explosion Trend",
     TYPE: "Method of Deployment",
     PURPOSE: "Purpose",
+    EXPLOSION_BY_COUNTRIES: "Explosions by Countries",
+    EXPLOSION_BY_PURPOSE: "Explosions by Purpose",
+    EXPLOSION_BY_TYPE: "Explosions by Deployment Method",
 }

@@ -114,7 +114,7 @@ class App extends Component {
                         </Col>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "49vh" }}>
-
+                                Coming soon...
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>

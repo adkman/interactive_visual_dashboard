@@ -71,20 +71,32 @@ class BarchartCountries extends Component {
             .attr("y", d => yScale(d['count']))
             .attr("height", d => yScale(0) - yScale(d['count']))
             .attr("width", xScale.bandwidth() / 2)
-            .on("mouseover", function (e, d) {
-                d3.select(this.parentNode)
-                    .append('text')
-                    .text(d['count'])
-                    .attr("x", xScale(d['category']) + xScale.bandwidth() / 2)
-                    .attr("y", yScale(d['count']) - 4)
-                    .attr("font-size", "14")
-                    .attr("font-weight", "bold")
-                    .attr("text-anchor", "middle")
-                    .attr("id", "temp_bar_chart_val")
-                    .attr("fill", colorScale(d['category']));
-            }).on("mouseout", function (e, d) {
-                d3.select("#temp_bar_chart_val").remove();
-            });
+            // .on("mouseover", function (e, d) {
+            //     d3.select(this.parentNode)
+            //         .append('text')
+            //         .text(d['count'])
+            //         .attr("x", xScale(d['category']) + xScale.bandwidth() / 2)
+            //         .attr("y", yScale(d['count']) - 4)
+            //         .attr("font-size", "14")
+            //         .attr("font-weight", "bold")
+            //         .attr("text-anchor", "middle")
+            //         .attr("id", "temp_bar_chart_val")
+            //         .attr("fill", colorScale(d['category']));
+            // }).on("mouseout", function (e, d) {
+            //     d3.select("#temp_bar_chart_val").remove();
+            // });
+
+        svg.append("g")
+            .selectAll("text")
+            .data(categorized_data)
+            .join("text")
+            .text(d => d['count'])
+            .attr("x", d => xScale(d['category']) + xScale.bandwidth() / 2)
+            .attr("y", d=> yScale(d['count']) - 4)
+            .attr("font-size", "14")
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "middle")
+            .attr("fill", d => colorScale(d['category']));
     }
 
     drawAxes = (svg,
@@ -97,8 +109,6 @@ class BarchartCountries extends Component {
         margin,
         num_categories) => {
 
-        let deg = num_categories >= 8 ? -30 : 0;
-        let anchor = num_categories >= 8 ? "end" : "middle";
         const xAxis = g => g
             .attr("transform", `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(xScale)
@@ -108,20 +118,22 @@ class BarchartCountries extends Component {
                         return "USA";
                     } else if (d === "United Kingdom") {
                         return "UK";
+                    } else if (d === "North Korea") {
+                        return "N. Korea";
                     } else {
                         return d;
                     }
                 }))
             .selectAll("text")
-            .attr("transform", `rotate(${deg})`)
+            // .attr("transform", `rotate(${deg})`)
             .attr("font-size", 12)
-            .attr("text-anchor", anchor)
+        // .attr("text-anchor", anchor)
 
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", (width - margin.right) / 2)
-            .attr("y", height)
+            .attr("y", height - 10)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(xTitleTxt)
@@ -136,6 +148,7 @@ class BarchartCountries extends Component {
             .attr("font-size", 14)
             .attr("x", -(height - margin.bottom) / 2)
             .attr("dy", ".75em")
+            .attr("y", 5)
             .attr("transform", "rotate(-90)")
             .text(yTitleTxt)
 
@@ -148,6 +161,15 @@ class BarchartCountries extends Component {
             .call(yAxis);
 
         svg.call(yTitle);
+
+        svg.append("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 16)
+            .attr("font-weight", "bold")
+            .attr("x", (width + margin.left) / 2)
+            .attr("y", margin.top-5)
+            .attr("text-anchor", "middle")
+            .text(LABEL.EXPLOSION_BY_COUNTRIES)
     }
 
     render() {

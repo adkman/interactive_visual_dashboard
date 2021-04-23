@@ -37,11 +37,13 @@ class StackedBarchartType extends Component {
         for (let i = 0; i < explosionsData.length; i++) {
             if (dataMap.has(explosionsData[i].type)) {
                 let typeData = dataMap.get(explosionsData[i].type);
+                typeData["totalCount"] += 1;
                 typeData[explosionsData[i].country] += 1;
                 dataMap.set(explosionsData[i].type, typeData);
             } else {
                 let typeData = {
                     "name": explosionsData[i].type,
+                    "totalCount": 1,
                 }
                 for (const country of nuclearCountries) {
                     typeData[country] = 0;
@@ -90,14 +92,18 @@ class StackedBarchartType extends Component {
             .attr("x", d => xScale(d.data.name))
             .attr("y", d => yScale(d[1]))
             .attr("height", d => yScale(d[0]) - yScale(d[1]))
-            .attr("width", xScale.bandwidth())
-            // .append('text')
-            // .text("")
-            // .attr("x", d => xScale(d.data.name))
-            // .attr("y", d => yScale(d[1]) - 10)
-            // .attr("font-size", "14")
-            // .attr("font-weight", "bold")
-            // .attr("text-anchor", "middle");
+            .attr("width", xScale.bandwidth());
+
+        svg.append("g")
+            .selectAll("text")
+            .data(data_grouped)
+            .join("text")
+            .text(d => d.totalCount)
+            .attr("x", d => xScale(d.name) + xScale.bandwidth() / 2)
+            .attr("y", d => yScale(d.totalCount) - 5)
+            .attr("font-size", "12")
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "middle");
             // .on("mouseover", function (e, d) {
             //     d3.select(this)
             //         .attr("fill-opacity", 1);
@@ -128,22 +134,18 @@ class StackedBarchartType extends Component {
         margin,
         num_categories) => {
 
-        let deg = num_categories >= 8 ? -15 : 0;
-        let anchor = num_categories >= 8 ? "end" : "middle";
         const xAxis = g => g
             .attr("transform", `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(xScale)
                 .tickSizeOuter(0))
             .selectAll("text")
-            .attr("transform", `rotate(${deg})`)
-            .attr("font-size", 12)
-            .attr("text-anchor", anchor)
+            .attr("font-size", 11)
 
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", (width - margin.right) / 2)
-            .attr("y", height)
+            .attr("y", height - 10)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(xTitleTxt)
@@ -158,6 +160,7 @@ class StackedBarchartType extends Component {
             .attr("font-size", 14)
             .attr("x", -(height - margin.bottom) / 2)
             .attr("dy", ".75em")
+            .attr("y", 5)
             .attr("transform", "rotate(-90)")
             .text(yTitleTxt)
 
@@ -170,6 +173,15 @@ class StackedBarchartType extends Component {
             .call(yAxis);
 
         svg.call(yTitle);
+
+        svg.append("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 16)
+            .attr("font-weight", "bold")
+            .attr("x", (width + margin.left) / 3)
+            .attr("y", margin.top-5)
+            .attr("text-anchor", "middle")
+            .text(LABEL.EXPLOSION_BY_TYPE)
     }
 
     render() {

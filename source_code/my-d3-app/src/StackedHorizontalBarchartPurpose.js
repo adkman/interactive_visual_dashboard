@@ -31,7 +31,7 @@ class StackedHorizontalBarchartPurpose extends Component {
 
         const { explosionsData, colorScale, nuclearCountries } = this.props;
 
-        const margin = ({ top: 50, right: 10, bottom: 20, left: 50 });
+        const margin = ({ top: 60, right: 35, bottom: 20, left: 55 });
 
         let dataMap = new Map();
         for (let i = 0; i < explosionsData.length; i++) {
@@ -39,11 +39,13 @@ class StackedHorizontalBarchartPurpose extends Component {
             for (let j = 0; j < purposes.length; j++) {
                 if (dataMap.has(purposes[j])) {
                     let purpose = dataMap.get(purposes[j]);
+                    purpose["totalCount"] += 1;
                     purpose[explosionsData[i].country] += 1;
                     dataMap.set(purposes[j], purpose);
                 } else {
                     let purpose = {
                         "name": purposes[j],
+                        "totalCount": 1,
                     }
                     for (const country of nuclearCountries) {
                         purpose[country] = 0;
@@ -91,10 +93,21 @@ class StackedHorizontalBarchartPurpose extends Component {
             .selectAll("rect")
             .data(d => d)
             .join("rect")
-            .attr("x", d => xScale(d[0]))
+            .attr("x", d => xScale(d[0]) + 1)
             .attr("y", d => yScale(d.data.name))
             .attr("width", d => xScale(d[1]) -xScale(d[0]))
             .attr("height", yScale.bandwidth())
+
+        svg.append("g")
+            .selectAll("text")
+            .data(data_grouped)
+            .join("text")
+            .text(d => d.totalCount)
+            .attr("x", d => xScale(d.totalCount) + 2)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 3)
+            .attr("font-size", "12")
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "start");
         // .on("mouseover", function (e, d) {
         //     d3.select(this)
         //         .attr("fill-opacity", 1);
@@ -133,26 +146,23 @@ class StackedHorizontalBarchartPurpose extends Component {
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
-            .attr("x", (width - margin.right) / 2)
-            .attr("y", margin.top - 30)
+            .attr("x", (width - margin.left) / 2)
+            .attr("y", margin.top - 20)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(xTitleTxt)
 
-        let deg = num_categories >= 8 ? -30 : 0;
-        let anchor = num_categories >= 8 ? "end" : "middle";
         const yAxis = g => g
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(yScale))
             .selectAll("text")
-            .attr("font-size", 9)
-            .attr("transform", `rotate(${deg})`)
-            .attr("text-anchor", anchor)
+            .attr("font-size", 10)
 
         const yTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", -(height - margin.bottom) / 2)
+            .attr("y", 10)
             .attr("dy", ".75em")
             .attr("transform", "rotate(-90)")
             .text(yTitleTxt)
@@ -166,6 +176,15 @@ class StackedHorizontalBarchartPurpose extends Component {
             .call(yAxis);
 
         svg.call(yTitle);
+
+        svg.append("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 16)
+            .attr("font-weight", "bold")
+            .attr("x", (width + margin.left) / 2)
+            .attr("y", 15)
+            .attr("text-anchor", "middle")
+            .text(LABEL.EXPLOSION_BY_PURPOSE)
     }
 
     render() {
