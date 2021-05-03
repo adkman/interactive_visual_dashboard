@@ -1,7 +1,8 @@
 import * as d3 from "d3";
-import Container from 'react-bootstrap/Container';
 import { Component } from 'react';
+import Container from 'react-bootstrap/Container';
 import { Constants } from './constants/Constants';
+import { getFilteredData } from './filterUtil';
 import { LABEL } from './locale/en-us';
 
 class StackedHorizontalBarchartPurpose extends Component {
@@ -20,6 +21,7 @@ class StackedHorizontalBarchartPurpose extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.explosionsData.length !== prevProps.explosionsData.length
             || this.props.explosionsData !== prevProps.explosionsData
+            || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.STACKED_HORIZONTAL_BARCHART_TYPE_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -29,18 +31,27 @@ class StackedHorizontalBarchartPurpose extends Component {
 
     drawChart = () => {
 
-        const { explosionsData, colorScale, nuclearCountries } = this.props;
+        const {
+            explosionsData,
+            colorScale,
+            nuclearCountries,
+            filter,
+            addToFilter,
+            removeFromFilter
+        } = this.props;
 
         const margin = ({ top: 60, right: 35, bottom: 20, left: 55 });
 
+        const filteredData = getFilteredData(explosionsData, filter, "purpose");
+
         let dataMap = new Map();
-        for (let i = 0; i < explosionsData.length; i++) {
-            let purposes = explosionsData[i].purpose.split("/");
+        for (let i = 0; i < filteredData.length; i++) {
+            let purposes = filteredData[i].purpose.split("/");
             for (let j = 0; j < purposes.length; j++) {
                 if (dataMap.has(purposes[j])) {
                     let purpose = dataMap.get(purposes[j]);
                     purpose["totalCount"] += 1;
-                    purpose[explosionsData[i].country] += 1;
+                    purpose[filteredData[i].country] += 1;
                     dataMap.set(purposes[j], purpose);
                 } else {
                     let purpose = {
@@ -50,7 +61,7 @@ class StackedHorizontalBarchartPurpose extends Component {
                     for (const country of nuclearCountries) {
                         purpose[country] = 0;
                     }
-                    purpose[explosionsData[i].country] = 1;
+                    purpose[filteredData[i].country] = 1;
                     dataMap.set(purposes[j], purpose);
                 }
             }
@@ -88,15 +99,28 @@ class StackedHorizontalBarchartPurpose extends Component {
             .selectAll("g")
             .data(data_stacked)
             .join("g")
-            .attr("fill", d => colorScale(d.key))
             // .attr("fill-opacity", 0.6)
             .selectAll("rect")
             .data(d => d)
             .join("rect")
+            .attr("fill", d => {
+                if (filter.purpose.size === 0 || filter.purpose.has(d.data.name)) {
+                    return colorScale(d.key);
+                } else {
+                    return Constants.DISABLED_COLOR;
+                }
+            })
             .attr("x", d => xScale(d[0]) + 1)
             .attr("y", d => yScale(d.data.name))
-            .attr("width", d => xScale(d[1]) -xScale(d[0]))
+            .attr("width", d => xScale(d[1]) - xScale(d[0]))
             .attr("height", yScale.bandwidth())
+            .on("click", function (e, d) {
+                if (filter.purpose.has(d.data.name)) {
+                    removeFromFilter("purpose", d.data.name);
+                } else {
+                    addToFilter("purpose", d.data.name);
+                }
+            });
 
         svg.append("g")
             .selectAll("text")
@@ -107,7 +131,14 @@ class StackedHorizontalBarchartPurpose extends Component {
             .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 3)
             .attr("font-size", "12")
             .attr("font-weight", "bold")
-            .attr("text-anchor", "start");
+            .attr("text-anchor", "start")
+            .on("click", function (e, d) {
+                if (filter.purpose.has(d.name)) {
+                    removeFromFilter("purpose", d.name);
+                } else {
+                    addToFilter("purpose", d.name);
+                }
+            });
         // .on("mouseover", function (e, d) {
         //     d3.select(this)
         //         .attr("fill-opacity", 1);

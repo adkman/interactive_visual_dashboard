@@ -1,7 +1,8 @@
 import * as d3 from "d3";
-import Container from 'react-bootstrap/Container';
 import { Component } from 'react';
+import Container from 'react-bootstrap/Container';
 import { Constants } from './constants/Constants';
+import { getFilteredData } from './filterUtil';
 import { LABEL } from './locale/en-us';
 
 class StackedBarchartType extends Component {
@@ -20,6 +21,7 @@ class StackedBarchartType extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.explosionsData.length !== prevProps.explosionsData.length
             || this.props.explosionsData !== prevProps.explosionsData
+            || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.STACKED_BARCHART_TYPE_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -29,27 +31,36 @@ class StackedBarchartType extends Component {
 
     drawChart = () => {
 
-        const { explosionsData, colorScale, nuclearCountries } = this.props;
+        const {
+            explosionsData,
+            colorScale,
+            nuclearCountries,
+            filter,
+            addToFilter,
+            removeFromFilter
+        } = this.props;
 
         const margin = ({ top: 20, right: 10, bottom: 50, left: 50 });
 
+        const filteredData = getFilteredData(explosionsData, filter, "type");
+
         let dataMap = new Map();
-        for (let i = 0; i < explosionsData.length; i++) {
-            if (dataMap.has(explosionsData[i].type)) {
-                let typeData = dataMap.get(explosionsData[i].type);
+        for (let i = 0; i < filteredData.length; i++) {
+            if (dataMap.has(filteredData[i].type)) {
+                let typeData = dataMap.get(filteredData[i].type);
                 typeData["totalCount"] += 1;
-                typeData[explosionsData[i].country] += 1;
-                dataMap.set(explosionsData[i].type, typeData);
+                typeData[filteredData[i].country] += 1;
+                dataMap.set(filteredData[i].type, typeData);
             } else {
                 let typeData = {
-                    "name": explosionsData[i].type,
+                    "name": filteredData[i].type,
                     "totalCount": 1,
                 }
                 for (const country of nuclearCountries) {
                     typeData[country] = 0;
                 }
-                typeData[explosionsData[i].country] = 1;
-                dataMap.set(explosionsData[i].type, typeData);
+                typeData[filteredData[i].country] = 1;
+                dataMap.set(filteredData[i].type, typeData);
             }
         }
 
@@ -84,15 +95,28 @@ class StackedBarchartType extends Component {
             .selectAll("g")
             .data(data_stacked)
             .join("g")
-            .attr("fill", d => colorScale(d.key))
             // .attr("fill-opacity", 0.6)
             .selectAll("rect")
             .data(d => d)
             .join("rect")
+            .attr("fill", d => {
+                if (filter.type.size === 0 || filter.type.has(d.data.name)) {
+                    return colorScale(d.key);
+                } else {
+                    return Constants.DISABLED_COLOR;
+                }
+            })
             .attr("x", d => xScale(d.data.name))
             .attr("y", d => yScale(d[1]))
             .attr("height", d => yScale(d[0]) - yScale(d[1]))
-            .attr("width", xScale.bandwidth());
+            .attr("width", xScale.bandwidth())
+            .on("click", function (e, d) {
+                if (filter.type.has(d.data.name)) {
+                    removeFromFilter("type", d.data.name);
+                } else {
+                    addToFilter("type", d.data.name);
+                }
+            });
 
         svg.append("g")
             .selectAll("text")
@@ -103,25 +127,32 @@ class StackedBarchartType extends Component {
             .attr("y", d => yScale(d.totalCount) - 5)
             .attr("font-size", "12")
             .attr("font-weight", "bold")
-            .attr("text-anchor", "middle");
-            // .on("mouseover", function (e, d) {
-            //     d3.select(this)
-            //         .attr("fill-opacity", 1);
-            //     d3.select(this.parentNode)
-            //         .append('text')
-            //         .text(d['count'])
-            //         .attr("x", xScale(d['category']) + xScale.bandwidth() / 2)
-            //         .attr("y", yScale(d['count']) - 4)
-            //         .attr("font-size", "14")
-            //         .attr("font-weight", "bold")
-            //         .attr("text-anchor", "middle")
-            //         .attr("id", "temp_bar_chart_val")
-            //         .attr("fill", colorScale(d['category']));
-            // }).on("mouseout", function (e, d) {
-            //     d3.select(this)
-            //         .attr("fill-opacity", 0.6);
-            //     d3.select("#temp_bar_chart_val").remove();
-            // });
+            .attr("text-anchor", "middle")
+            .on("click", function (e, d) {
+                if (filter.type.has(d.name)) {
+                    removeFromFilter("type", d.name);
+                } else {
+                    addToFilter("type", d.name);
+                }
+            });
+        // .on("mouseover", function (e, d) {
+        //     d3.select(this)
+        //         .attr("fill-opacity", 1);
+        //     d3.select(this.parentNode)
+        //         .append('text')
+        //         .text(d['count'])
+        //         .attr("x", xScale(d['category']) + xScale.bandwidth() / 2)
+        //         .attr("y", yScale(d['count']) - 4)
+        //         .attr("font-size", "14")
+        //         .attr("font-weight", "bold")
+        //         .attr("text-anchor", "middle")
+        //         .attr("id", "temp_bar_chart_val")
+        //         .attr("fill", colorScale(d['category']));
+        // }).on("mouseout", function (e, d) {
+        //     d3.select(this)
+        //         .attr("fill-opacity", 0.6);
+        //     d3.select("#temp_bar_chart_val").remove();
+        // });
     }
 
     drawAxes = (svg,
@@ -179,7 +210,7 @@ class StackedBarchartType extends Component {
             .attr("font-size", 16)
             .attr("font-weight", "bold")
             .attr("x", (width + margin.left) / 3)
-            .attr("y", margin.top-5)
+            .attr("y", margin.top - 5)
             .attr("text-anchor", "middle")
             .text(LABEL.EXPLOSION_BY_TYPE)
     }

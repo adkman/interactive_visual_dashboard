@@ -1,7 +1,8 @@
 import * as d3 from "d3";
-import Container from 'react-bootstrap/Container';
 import { Component } from 'react';
+import Container from 'react-bootstrap/Container';
 import { Constants } from './constants/Constants';
+import { getFilteredData } from './filterUtil';
 import { LABEL } from './locale/en-us';
 
 class BarchartCountries extends Component {
@@ -20,6 +21,7 @@ class BarchartCountries extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.explosionsData.length !== prevProps.explosionsData.length
             || this.props.explosionsData !== prevProps.explosionsData
+            || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.BARCHART_COUNTRIES_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -29,11 +31,19 @@ class BarchartCountries extends Component {
 
     drawChart = () => {
 
-        const { explosionsData, colorScale } = this.props;
+        const {
+            explosionsData,
+            colorScale,
+            filter,
+            addToFilter,
+            removeFromFilter
+        } = this.props;
 
         const margin = ({ top: 20, right: 10, bottom: 50, left: 50 });
 
-        const data_grouped = d3.group(explosionsData, d => d.country);
+        const filteredData = getFilteredData(explosionsData, filter, "country");
+
+        const data_grouped = d3.group(filteredData, d => d.country);
 
         let categorized_data = [];
         for (let [key, value] of data_grouped.entries()) {
@@ -65,26 +75,25 @@ class BarchartCountries extends Component {
             .selectAll("rect")
             .data(categorized_data)
             .join("rect")
-            .attr("fill", d => colorScale(d['category']))
+            .attr("fill", d => {
+                if (filter.country.size === 0 || filter.country.has(d['category'])) {
+                    return colorScale(d['category']);
+                } else {
+                    return Constants.DISABLED_COLOR;
+                }
+            })
             // .attr("fill-opacity", 0.6)
             .attr("x", d => xScale(d['category']) + xScale.bandwidth() / 4)
             .attr("y", d => yScale(d['count']))
             .attr("height", d => yScale(0) - yScale(d['count']))
             .attr("width", xScale.bandwidth() / 2)
-            // .on("mouseover", function (e, d) {
-            //     d3.select(this.parentNode)
-            //         .append('text')
-            //         .text(d['count'])
-            //         .attr("x", xScale(d['category']) + xScale.bandwidth() / 2)
-            //         .attr("y", yScale(d['count']) - 4)
-            //         .attr("font-size", "14")
-            //         .attr("font-weight", "bold")
-            //         .attr("text-anchor", "middle")
-            //         .attr("id", "temp_bar_chart_val")
-            //         .attr("fill", colorScale(d['category']));
-            // }).on("mouseout", function (e, d) {
-            //     d3.select("#temp_bar_chart_val").remove();
-            // });
+            .on("click", function (e, d) {
+                if (filter.country.has(d['category'])) {
+                    removeFromFilter("country", d['category']);
+                } else {
+                    addToFilter("country", d['category']);
+                }
+            });
 
         svg.append("g")
             .selectAll("text")
@@ -92,11 +101,23 @@ class BarchartCountries extends Component {
             .join("text")
             .text(d => d['count'])
             .attr("x", d => xScale(d['category']) + xScale.bandwidth() / 2)
-            .attr("y", d=> yScale(d['count']) - 4)
+            .attr("y", d => yScale(d['count']) - 4)
             .attr("font-size", "14")
             .attr("font-weight", "bold")
             .attr("text-anchor", "middle")
-            .attr("fill", d => colorScale(d['category']));
+            .attr("fill", d => {
+                if (filter.country.size === 0 || filter.country.has(d['category'])) {
+                    return colorScale(d['category']);
+                } else {
+                    return Constants.DISABLED_COLOR;
+                }
+            }).on("click", function (e, d) {
+                if (filter.country.has(d['category'])) {
+                    removeFromFilter("country", d['category']);
+                } else {
+                    addToFilter("country", d['category']);
+                }
+            });
     }
 
     drawAxes = (svg,
@@ -167,7 +188,7 @@ class BarchartCountries extends Component {
             .attr("font-size", 16)
             .attr("font-weight", "bold")
             .attr("x", (width + margin.left) / 2)
-            .attr("y", margin.top-5)
+            .attr("y", margin.top - 5)
             .attr("text-anchor", "middle")
             .text(LABEL.EXPLOSION_BY_COUNTRIES)
     }

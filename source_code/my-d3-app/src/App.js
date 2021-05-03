@@ -25,10 +25,16 @@ class App extends Component {
             inventoryData: [],
             inventoryFeatures: [],
             nuclearCountries: [],
+            filter: {
+                country: new Set(),
+                type: new Set(),
+                purpose: new Set(),
+                yearRange: [],
+            }
         }
 
         this.colorScale = d3.scaleOrdinal()
-            .domain(this.state.explosionsData.map(d => d.country))
+            .domain(this.state.nuclearCountries)
             .range(d3.schemeSet2)
     }
 
@@ -49,9 +55,27 @@ class App extends Component {
 
                     this.colorScale = d3.scaleOrdinal()
                         .domain(nuclearCountries)
-                        .range(d3.schemeCategory10)
+                        .range(d3.schemeSet2)
                 }
             )
+    }
+
+    addToFilter = (key, value) => {
+        let newFilter = Object.assign({}, this.state.filter)
+        newFilter[key].add(value)
+        console.log("new filter", newFilter);
+        this.setState({
+            filter: newFilter
+        })
+    }
+
+    removeFromFilter = (key, value) => {
+        let newFilter = Object.assign({}, this.state.filter)
+        newFilter[key].delete(value)
+        console.log("new filter", newFilter);
+        this.setState({
+            filter: newFilter
+        })
     }
 
     render() {
@@ -66,6 +90,9 @@ class App extends Component {
                                         <BarchartCountries
                                             explosionsData={this.state.explosionsData}
                                             colorScale={this.colorScale}
+                                            filter={this.state.filter}
+                                            addToFilter={this.addToFilter}
+                                            removeFromFilter={this.removeFromFilter}
                                         />
                                     </Card>
                                 </Col>
@@ -77,6 +104,9 @@ class App extends Component {
                                             explosionsData={this.state.explosionsData}
                                             colorScale={this.colorScale}
                                             nuclearCountries={this.state.nuclearCountries}
+                                            filter={this.state.filter}
+                                            addToFilter={this.addToFilter}
+                                            removeFromFilter={this.removeFromFilter}
                                         />
                                     </Card>
                                 </Col>
@@ -88,6 +118,9 @@ class App extends Component {
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.nuclearCountries}
+                                    filter={this.state.filter}
+                                    addToFilter={this.addToFilter}
+                                    removeFromFilter={this.removeFromFilter}
                                 />
                             </Card>
                         </Col>
@@ -97,6 +130,7 @@ class App extends Component {
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.nuclearCountries}
+                                    filter={this.state.filter}
                                 />
                             </Card>
                         </Col>

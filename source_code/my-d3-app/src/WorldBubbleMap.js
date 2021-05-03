@@ -1,9 +1,10 @@
 import * as d3 from "d3";
-import * as topojson from "topojson-client";
 import { Component } from 'react';
 import Container from 'react-bootstrap/Container';
+import * as topojson from "topojson-client";
 import { Constants } from './constants/Constants';
 import countries_data from './data/countries-110m.json';
+import { getFilteredData } from './filterUtil';
 
 class WorldBubbleMap extends Component {
 
@@ -21,6 +22,7 @@ class WorldBubbleMap extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.explosionsData.length !== prevProps.explosionsData.length
             || this.props.explosionsData !== prevProps.explosionsData
+            || this.props.filter !== prevProps.filter
         ) {
             const svg = d3.select("#" + Constants.WORLD_MAP_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -34,13 +36,16 @@ class WorldBubbleMap extends Component {
             explosionsData,
             colorScale,
             nuclearCountries,
+            filter,
         } = this.props;
 
         const projection = d3.geoNaturalEarth1();
 
         const path = d3.geoPath(projection);
 
-        const data = explosionsData.map(d => Object.assign({}, d, {
+        const filteredData = getFilteredData(explosionsData, filter, "");
+
+        const data = filteredData.map(d => Object.assign({}, d, {
             "position": path.centroid({
                 "type": "Feature",
                 "geometry": {
@@ -71,7 +76,14 @@ class WorldBubbleMap extends Component {
             .selectAll("path")
             .data(countries.features)
             .join("path")
-            .attr("fill", d => nuclearCountries.indexOf(d.properties.name) !== -1 ? colorScale(d.properties.name) :'#EBEBEF')
+            .attr("fill", d => {
+                if (nuclearCountries.indexOf(d.properties.name) !== -1 &&
+                    (filter.country.size === 0 || filter.country.has(d.properties.name))) {
+                    return colorScale(d.properties.name);
+                } else {
+                    return Constants.DISABLED_COLOR;
+                }
+            })
             .attr("fill-opacity", d => nuclearCountries.indexOf(d.properties.name) !== -1 ? 0.3 : 0.6)
             .attr("d", path);
 
