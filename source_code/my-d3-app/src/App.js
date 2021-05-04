@@ -8,6 +8,7 @@ import './App.css';
 import BarchartCountries from './BarchartCountries';
 import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
 import InventoryMultiLineChart from './InventoryMultiLineChart';
+import ParallelCoordinatePlot from "./ParallelCoordinatePlot";
 import StackedBarchartType from './StackedBarchartType';
 import StackedHorizontalBarchartPurpose from './StackedHorizontalBarchartPurpose';
 import WorldBubbleMap from './WorldBubbleMap';
@@ -29,7 +30,7 @@ class App extends Component {
                 country: new Set(),
                 type: new Set(),
                 purpose: new Set(),
-                yearRange: [],
+                yearRange: [1940, 2020],
             }
         }
 
@@ -67,6 +68,19 @@ class App extends Component {
         this.setState({
             filter: newFilter
         })
+    }
+
+    addYearRangeFilter = (minVal, maxVal) => {
+        let newFilter = Object.assign({}, this.state.filter)
+        if (this.state.filter["yearRange"][0] !== minVal || this.state.filter["yearRange"][1] !== maxVal) {
+            newFilter["yearRange"][0] = minVal;
+            newFilter["yearRange"][1] = maxVal;
+
+            console.log("new filter", newFilter);
+            this.setState({
+                filter: newFilter
+            })
+        }
     }
 
     removeFromFilter = (key, value) => {
@@ -143,12 +157,18 @@ class App extends Component {
                                     explosionsFeatures={this.state.explosionsFeatures}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.nuclearCountries}
+                                    filter={this.state.filter}
+                                    addYearRangeFilter={this.addYearRangeFilter}
                                 />
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
                             <Card style={{ height: "49vh" }}>
-                                Coming soon...
+                                <ParallelCoordinatePlot
+                                    explosionsData={this.state.explosionsData}
+                                    colorScale={this.colorScale}
+                                    filter={this.state.filter}
+                                />
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
@@ -158,6 +178,7 @@ class App extends Component {
                                     inventoryFeatures={this.state.inventoryFeatures}
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.nuclearCountries}
+                                    filter={this.state.filter}
                                 />
                             </Card>
                         </Col>

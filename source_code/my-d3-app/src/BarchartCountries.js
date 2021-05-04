@@ -2,8 +2,8 @@ import * as d3 from "d3";
 import { Component } from 'react';
 import Container from 'react-bootstrap/Container';
 import { Constants } from './constants/Constants';
-import { getFilteredData } from './filterUtil';
 import { LABEL } from './locale/en-us';
+import { getFilteredData } from './util';
 
 class BarchartCountries extends Component {
 

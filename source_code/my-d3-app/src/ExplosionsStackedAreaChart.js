@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import { Component } from 'react';
 import { Constants } from './constants/Constants';
 import { LABEL } from './locale/en-us';
+import { getFilteredData } from './util';
 
 class ExplosionsStackedAreaChart extends Component {
 
@@ -19,7 +20,13 @@ class ExplosionsStackedAreaChart extends Component {
 
     componentDidUpdate(prevProps) {
 
-        if (this.props.explosionsData !== prevProps.explosionsData || this.props.explosionsFeatures !== prevProps.explosionsFeatures) {
+        if (
+            this.props.explosionsData !== prevProps.explosionsData
+            || this.props.explosionsFeatures !== prevProps.explosionsFeatures
+            || this.props.filter.country !== prevProps.filter.country
+            || this.props.filter.type !== prevProps.filter.type
+            || this.props.filter.purpose !== prevProps.filter.purpose
+        ) {
             const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
             svg.remove();
             this.drawChart();
@@ -28,16 +35,25 @@ class ExplosionsStackedAreaChart extends Component {
 
     drawChart = () => {
 
-        const {explosionsData, explosionsFeatures, nuclearCountries, colorScale} = this.props;
+        const {
+            explosionsData,
+            explosionsFeatures,
+            nuclearCountries,
+            colorScale,
+            filter,
+            addYearRangeFilter,
+        } = this.props;
 
-        if(explosionsData.length===0 || explosionsFeatures.length===0){
+        if (explosionsData.length === 0 || explosionsFeatures.length === 0) {
             return
         }
         const margin = ({ top: 30, right: 20, bottom: 40, left: 45 });
-        const margin2 = {top: 430, right: 20, bottom: 30, left: 40}
+        // const margin2 = { top: 430, right: 20, bottom: 30, left: 40 }
 
         this.height2 = 30
         this.height1 = this.height - this.height2
+
+        const filteredData = getFilteredData(explosionsData, filter, "");
 
         let prev_year = 0
         let data = []
@@ -53,16 +69,16 @@ class ExplosionsStackedAreaChart extends Component {
             "North Korea": 0
         }
         let curr_obj = {}
-        for(let row in explosionsData){
-            let country = explosionsData[row].country
-            let curr_year = explosionsData[row].year
-            if(prev_year !== curr_year){
+        for (let row in filteredData) {
+            let country = filteredData[row].country
+            let curr_year = filteredData[row].year
+            if (prev_year !== curr_year) {
                 curr_obj["Year"] = prev_year
                 data.push(curr_obj)
                 curr_obj = JSON.parse(JSON.stringify(dummy))
                 prev_year = curr_year
             }
-            curr_obj[country] = curr_obj[country]+1
+            curr_obj[country] = curr_obj[country] + 1
         }
         data = data.slice(1)
 
@@ -71,6 +87,7 @@ class ExplosionsStackedAreaChart extends Component {
         const x = d3.scaleLinear()
             .domain(d3.extent(data, d => d.Year))
             .range([margin.left, this.width - margin.right])
+            .nice()
 
         const x2 = d3.scaleLinear()
             .domain(d3.extent(data, d => d.Year))
@@ -97,24 +114,24 @@ class ExplosionsStackedAreaChart extends Component {
         const xAxis = g => g
             .attr("transform", `translate(0,${this.height1 - margin.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
-        
+
         const xAxis2 = g => g
-            .attr("transform", `translate(0,${235-this.height2 - margin.bottom})`)
+            .attr("transform", `translate(0,${235 - this.height2 - margin.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
 
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", (this.width + margin.left) / 2)
-            .attr("y", this.height1-5)
+            .attr("y", this.height1 - 5)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(LABEL.YEAR)
-        
+
         const yAxis = g => g
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y))
-    
+
         const yTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
@@ -127,13 +144,13 @@ class ExplosionsStackedAreaChart extends Component {
         const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID)
             .append("svg")
             .attr("viewBox", [0, 0, this.width, this.height]);
-        
+
         svg.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 16)
             .attr("font-weight", "bold")
             .attr("x", (this.width + margin.left) / 2)
-            .attr("y", margin.top-5)
+            .attr("y", margin.top - 5)
             .attr("text-anchor", "middle")
             .text(LABEL.EXPLOSION_TREND)
 
@@ -142,20 +159,22 @@ class ExplosionsStackedAreaChart extends Component {
         svg.call(yTitle);
 
         var brush = d3.brushX()
-        .extent([[margin.left, 136], [this.width - margin.right, 136+this.height2]])
-        .on("brush end", brushed);
+            .extent([[margin.left, 136], [this.width - margin.right, 136 + this.height2]])
+            .on("brush end", brushed);
 
-        function brushed({selection}) {
+        function brushed({ selection }) {
             var s = selection || x2.range();
             x.domain(s.map(x2.invert, x2));
 
-            //GET FILTER FOR  YEAR
-            let minYear = x.domain()[0]
-            let maxYear = x.domain()[1]
-            y.domain([0, d3.max(series, d => d3.max(d, d => (d["data"]["Year"]>=minYear && d["data"]["Year"]<=maxYear)?d[1]:0))]).nice()
+            let minYear = Math.ceil(x.domain()[0])
+            let maxYear = Math.floor(x.domain()[1])
+            addYearRangeFilter(minYear, maxYear);
+            y.domain([0, d3.max(series, d => d3.max(d, d => (d["data"]["Year"] >= minYear && d["data"]["Year"] <= maxYear) ? d[1] : 0))]).nice()
             Line_chart.selectAll(".area").attr("d", area);
             focus.select(".axis--x").call(xAxis);
             focus.select(".axis--y").call(yAxis);
+
+            console.log("year range", minYear, maxYear);
         }
 
         var zoom = d3.zoom()
@@ -164,7 +183,7 @@ class ExplosionsStackedAreaChart extends Component {
             .extent([[0, 0], [this.width, this.height1]])
             .on("zoom", zoomed);
 
-        function zoomed({transform}) {
+        function zoomed({ transform }) {
             var t = transform;
             x.domain(t.rescaleX(x2).domain());
             Line_chart.selectAll(".area").attr("d", area);
@@ -187,8 +206,8 @@ class ExplosionsStackedAreaChart extends Component {
             .attr("clip-path", "url(#clip)");
 
         var focus = svg.append("g")
-        .attr("viewBox", [0, 0, this.width, this.height1])
-        .attr("class", "focus")
+            .attr("viewBox", [0, 0, this.width, this.height1])
+            .attr("class", "focus")
 
         var context = svg.append("g")
             .attr("class", "context")
@@ -211,21 +230,21 @@ class ExplosionsStackedAreaChart extends Component {
             .selectAll("path")
             .data(series)
             .join("path")
-            .attr("fill", ({key}) => colorScale(key))
+            .attr("fill", ({ key }) => colorScale(key))
             .attr("class", "area")
             .attr("d", area)
             .append("title")
-            .text(({key}) => key);
+            .text(({ key }) => key);
 
         context
             .selectAll("path")
             .data(series)
             .join("path")
-            .attr("fill", ({key}) => colorScale(key))
+            .attr("fill", ({ key }) => colorScale(key))
             .attr("class", "area")
             .attr("d", area2)
             .append("title")
-            .text(({key}) => key);
+            .text(({ key }) => key);
 
         context.append("g")
             .attr("class", "axis axis--x")
@@ -240,7 +259,7 @@ class ExplosionsStackedAreaChart extends Component {
         svg.append("rect")
             .attr("class", "zoom")
             .attr("width", this.width)
-            .attr("height", this.height1-margin.bottom)
+            .attr("height", this.height1 - margin.bottom)
             .style("fill-opacity", 0)
             .call(zoom);
 

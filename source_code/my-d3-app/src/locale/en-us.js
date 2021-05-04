@@ -12,4 +12,5 @@ export const LABEL = {
     EXPLOSION_BY_COUNTRIES: "Explosions by Countries",
     EXPLOSION_BY_PURPOSE: "Explosions by Purpose",
     EXPLOSION_BY_TYPE: "Explosions by Deployment Method",
+    PARALLEL_COORDINATE_PLOT: "Parallel Coordinate Plot",
 }

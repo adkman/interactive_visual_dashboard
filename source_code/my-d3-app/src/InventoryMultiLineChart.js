@@ -1,8 +1,9 @@
 import * as d3 from "d3";
-import Container from 'react-bootstrap/Container';
 import { Component } from 'react';
+import Container from 'react-bootstrap/Container';
 import { Constants } from './constants/Constants';
 import { LABEL } from './locale/en-us';
+import { getFilteredData } from './util';
 
 class InventoryStackedAreaChart extends Component {
 
@@ -18,7 +19,11 @@ class InventoryStackedAreaChart extends Component {
 
     componentDidUpdate(prevProps) {
 
-        if (this.props.inventoryData !== prevProps.inventoryData || this.props.inventoryFeatures !== prevProps.inventoryFeatures) {
+        if (
+            this.props.inventoryData !== prevProps.inventoryData
+            || this.props.inventoryFeatures !== prevProps.inventoryFeatures
+            || this.props.filter !== prevProps.filter
+        ) {
             const svg = d3.select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID).select("svg");
             svg.remove();
             this.drawChart();
@@ -27,35 +32,44 @@ class InventoryStackedAreaChart extends Component {
 
     drawChart = () => {
 
-        const {inventoryData, inventoryFeatures, colorScale, nuclearCountries} = this.props;
+        const {
+            inventoryData,
+            inventoryFeatures,
+            colorScale,
+            nuclearCountries,
+            filter,
+        } = this.props;
 
-        if(inventoryData.length===0 || inventoryFeatures.length===0){
+        if (inventoryData.length === 0 || inventoryFeatures.length === 0) {
             return
         }
         const margin = ({ top: 30, right: 20, bottom: 40, left: 60 });
 
-        const countries = inventoryFeatures.slice(1)
+        const filteredData = getFilteredData(inventoryData, filter, "");
 
         let series = []
 
-        const year = "Year"
-        for(let idx in countries){
+        const year = inventoryFeatures[0];
+        const countries = filter.country.size === 0
+            ? inventoryFeatures.slice(1)
+            : inventoryFeatures.slice(1).filter(d => filter.country.has(d))
+        for (let idx in countries) {
             let country = countries[idx]
-            let temp = inventoryData.map((d)=>{return d[country]})
-            series.push({name: country, values: temp})
+            let temp = filteredData.map((d) => { return d[country] })
+            series.push({ name: country, values: temp })
         }
 
-        var dates = inventoryData.map((d)=> {return d[year]})
+        var dates = filteredData.map((d) => { return d[year] })
         const data = {
             series: series,
             dates: dates
-        }       
+        }
 
         const line = d3.line()
-        .defined(d => !isNaN(d))
-        .x((d, i) => x(data.dates[i]))
-        .y(d => y(d))
-        
+            .defined(d => !isNaN(d))
+            .x((d, i) => x(data.dates[i]))
+            .y(d => y(d))
+
 
         const x = d3.scaleLinear()
             .domain(d3.extent(data.dates))
@@ -68,7 +82,7 @@ class InventoryStackedAreaChart extends Component {
         const xAxis = g => g
             .attr("transform", `translate(0,${this.height - margin.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
-        
+
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
@@ -77,18 +91,18 @@ class InventoryStackedAreaChart extends Component {
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(LABEL.YEAR)
-        
+
         const yAxis = g => g
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).ticks(this.height / 40).tickSizeOuter(0))
-            // .call(g => g.select(".domain").remove())
-            // .call(g => g.select(".tick:last-of-type text").clone()
-            // .attr("x", 3)
-            // .attr("text-anchor", "start")
-            // .attr("font-weight", "bold")
-            // .text(data.y)
-            // )
-    
+        // .call(g => g.select(".domain").remove())
+        // .call(g => g.select(".tick:last-of-type text").clone()
+        // .attr("x", 3)
+        // .attr("text-anchor", "start")
+        // .attr("font-weight", "bold")
+        // .text(data.y)
+        // )
+
         const yTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
@@ -101,13 +115,13 @@ class InventoryStackedAreaChart extends Component {
         const svg = d3.select("#" + Constants.INVENTORY_MULTILINE_CHART_SVG_CONTAINER_ID)
             .append("svg")
             .attr("viewBox", [0, 0, this.width, this.height]);
-        
+
         svg.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 16)
             .attr("font-weight", "bold")
             .attr("x", (this.width + margin.left) / 2)
-            .attr("y", margin.top-5)
+            .attr("y", margin.top - 5)
             .attr("text-anchor", "middle")
             .text(LABEL.NUCLEAR_STOCKPILE_TREND)
 
@@ -119,10 +133,10 @@ class InventoryStackedAreaChart extends Component {
             .selectAll("path")
             .data(data.series)
             .join("path")
-            .attr("stroke", ({name}) => colorScale(name))
+            .attr("stroke", ({ name }) => colorScale(name))
             .style("mix-blend-mode", "multiply")
             .attr("d", d => line(d.values));
-              
+
         // function hover(svg, path) {
 
         //     // if ("ontouchstart" in document) svg
@@ -185,12 +199,12 @@ class InventoryStackedAreaChart extends Component {
 
         svg.append("g")
             .call(xAxis);
-        
+
         svg.call(xTitle);
 
         svg.append("g")
             .call(yAxis);
-        
+
         svg.call(yTitle);
 
         svg.append('g')

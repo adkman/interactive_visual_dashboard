@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import * as topojson from "topojson-client";
 import { Constants } from './constants/Constants';
 import countries_data from './data/countries-110m.json';
-import { getFilteredData } from './filterUtil';
+import { getFilteredData } from './util';
 
 class WorldBubbleMap extends Component {
 
