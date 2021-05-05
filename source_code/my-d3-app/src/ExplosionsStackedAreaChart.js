@@ -10,7 +10,7 @@ class ExplosionsStackedAreaChart extends Component {
     width;
     height;
     height2;
-
+    height1;
     componentDidMount() {
         const container = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID);
         this.width = container.node().getBoundingClientRect().width;
@@ -47,8 +47,8 @@ class ExplosionsStackedAreaChart extends Component {
         if (explosionsData.length === 0 || explosionsFeatures.length === 0) {
             return
         }
-        const margin = ({ top: 30, right: 20, bottom: 40, left: 45 });
-        // const margin2 = { top: 430, right: 20, bottom: 30, left: 40 }
+        const margin = ({ top: 30, right: 20, bottom: 60, left: 45 });
+        const margin2 = { top: 0, right: 20, bottom: 160, left: 45 }
 
         this.height2 = 30
         this.height1 = this.height - this.height2
@@ -99,7 +99,7 @@ class ExplosionsStackedAreaChart extends Component {
 
         const y2 = d3.scaleLinear()
             .domain([0, d3.max(series, d => d3.max(d, d => d[1]))]).nice()
-            .range([165, 165 - this.height2])
+            .range([this.height-margin2.bottom, this.height-margin2.bottom-this.height2])
 
         const area = d3.area()
             .x(d => x(d.data.Year))
@@ -116,14 +116,14 @@ class ExplosionsStackedAreaChart extends Component {
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
 
         const xAxis2 = g => g
-            .attr("transform", `translate(0,${235 - this.height2 - margin.bottom})`)
+            .attr("transform", `translate(0,${this.height - margin2.bottom})`)
             .call(d3.axisBottom(x).ticks(this.width / 80).tickSizeOuter(0))
 
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", (this.width + margin.left) / 2)
-            .attr("y", this.height1 - 5)
+            .attr("y", this.height1 -20)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(LABEL.YEAR)
@@ -159,7 +159,7 @@ class ExplosionsStackedAreaChart extends Component {
         svg.call(yTitle);
 
         var brush = d3.brushX()
-            .extent([[margin.left, 136], [this.width - margin.right, 136 + this.height2]])
+            .extent([[margin.left, this.height-margin2.bottom-this.height2], [this.width - margin.right, this.height-margin2.bottom]])
             .on("brush end", brushed);
 
         function brushed({ selection }) {
@@ -258,8 +258,10 @@ class ExplosionsStackedAreaChart extends Component {
 
         svg.append("rect")
             .attr("class", "zoom")
-            .attr("width", this.width)
-            .attr("height", this.height1 - margin.bottom)
+            .attr("x", margin.left)
+            .attr("y", margin.top)
+            .attr("width", this.width - margin.left - margin.right)
+            .attr("height", this.height1 - margin.top - margin.bottom)
             .style("fill-opacity", 0)
             .call(zoom);
 
