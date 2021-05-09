@@ -55,7 +55,9 @@ class WorldBubbleMap extends Component {
             })
         }));
 
-        // const land = topojson.feature(land_data, land_data.objects.land);
+        const zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", zoomed);
 
         const countries = topojson.feature(countries_data, countries_data.objects.countries);
 
@@ -68,6 +70,8 @@ class WorldBubbleMap extends Component {
             .attr("viewBox", [0, 0, this.width, this.height])
             .style("max-height", "100%")
             .style("width", "auto");
+
+        svg.call(zoom);
 
         const countriesGroup = svg.append("g");
 
@@ -97,7 +101,7 @@ class WorldBubbleMap extends Component {
             .attr("stroke-linejoin", "round")
             .attr("d", path);
 
-        svg.append("g")
+        const circles = svg.append("g")
             .selectAll("circle")
             .data(data.filter(d => d.position))
             .join("circle")
@@ -126,6 +130,14 @@ class WorldBubbleMap extends Component {
                     .attr("fill-opacity", 0.25);
                 d3.select("#temp_bubble_text").remove();
             });
+
+        function zoomed(event) {
+            const { transform } = event;
+            countriesGroup.attr("transform", transform);
+            countriesGroup.attr("stroke-width", 1 / transform.k);
+
+            circles.attr("transform", d => `translate(${transform.apply(d.position)})`)
+        }
 
     }
 

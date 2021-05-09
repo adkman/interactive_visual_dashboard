@@ -40,7 +40,7 @@ class StackedBarchartType extends Component {
             removeFromFilter
         } = this.props;
 
-        const margin = ({ top: 20, right: 10, bottom: 50, left: 50 });
+        const margin = ({ top: 30, right: 10, bottom: 40, left: 50 });
 
         const filteredData = getFilteredData(explosionsData, filter, "type");
 
@@ -176,7 +176,7 @@ class StackedBarchartType extends Component {
             .attr("font-family", "sans-serif")
             .attr("font-size", 14)
             .attr("x", (width - margin.right) / 2)
-            .attr("y", height - 10)
+            .attr("y", height - 5)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
             .text(xTitleTxt)
@@ -209,8 +209,8 @@ class StackedBarchartType extends Component {
             .attr("font-family", "sans-serif")
             .attr("font-size", 16)
             .attr("font-weight", "bold")
-            .attr("x", (width + margin.left) / 3)
-            .attr("y", margin.top - 5)
+            .attr("x", (width + margin.left) / 2)
+            .attr("y", 15)
             .attr("text-anchor", "middle")
             .text(LABEL.EXPLOSION_BY_TYPE)
     }

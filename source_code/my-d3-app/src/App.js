@@ -63,8 +63,9 @@ class App extends Component {
 
     addToFilter = (key, value) => {
         let newFilter = Object.assign({}, this.state.filter)
-        newFilter[key].add(value)
-        console.log("new filter", newFilter);
+        newFilter[key] = new Set(this.state.filter[key]);
+        newFilter[key].add(value);
+        console.log("new filter", newFilter, this.state.filter);
         this.setState({
             filter: newFilter
         })
@@ -73,10 +74,11 @@ class App extends Component {
     addYearRangeFilter = (minVal, maxVal) => {
         let newFilter = Object.assign({}, this.state.filter)
         if (this.state.filter["yearRange"][0] !== minVal || this.state.filter["yearRange"][1] !== maxVal) {
+            newFilter["yearRange"] = [0, 0];
             newFilter["yearRange"][0] = minVal;
             newFilter["yearRange"][1] = maxVal;
 
-            console.log("new filter", newFilter);
+            console.log("new filter", newFilter, this.state.filter);
             this.setState({
                 filter: newFilter
             })
@@ -85,8 +87,13 @@ class App extends Component {
 
     removeFromFilter = (key, value) => {
         let newFilter = Object.assign({}, this.state.filter)
+        newFilter[key] = new Set(this.state.filter[key]);
         newFilter[key].delete(value)
-        console.log("new filter", newFilter);
+        console.log("new filter", newFilter, this.state.filter);
+
+        if (newFilter.country.size === 0 && newFilter.type.size === 0 && newFilter.purpose.size === 0) {
+            newFilter["yearRange"] = [1940, 2020];
+        }
         this.setState({
             filter: newFilter
         })
