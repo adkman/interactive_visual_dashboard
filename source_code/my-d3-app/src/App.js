@@ -4,11 +4,14 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 import Row from 'react-bootstrap/Row';
 import './App.css';
 import BarchartCountries from './BarchartCountries';
 import ExplosionsStackedAreaChart from './ExplosionsStackedAreaChart';
 import InventoryMultiLineChart from './InventoryMultiLineChart';
+import { LABEL } from "./locale/en-us";
 import ParallelCoordinatePlot from "./ParallelCoordinatePlot";
 import StackedBarchartType from './StackedBarchartType';
 import StackedHorizontalBarchartPurpose from './StackedHorizontalBarchartPurpose';
@@ -122,12 +125,18 @@ class App extends Component {
     render() {
         return (
             <div style={{ height: "100vh" }}>
-                <Container fluid style={{ height: "inherit" }}>
+                <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{ height: "4vh" }}>
+                    <Nav className="justify-content-start" onSelect={this.resetFilters} style={{ width: "10%" }}>
+                        <Nav.Link href="#"> Reset Filters </Nav.Link>
+                    </Nav>
+                    <Navbar.Brand className="justify-content-center" style={{ width: "100%", textAlign: "center" }}> {LABEL.PAGE_HEADING} </Navbar.Brand>
+                </Navbar>
+                <Container fluid style={{ height: "96vh", paddingTop: "40px" }}>
                     <Row>
                         <Col sm={3}>
                             <Row>
                                 <Col className="main-col-cards" sm={12}>
-                                    <Card style={{ height: "25vh" }}>
+                                    <Card style={{ height: "24vh" }}>
                                         <BarchartCountries
                                             explosionsData={this.state.explosionsData}
                                             colorScale={this.colorScale}
@@ -140,7 +149,7 @@ class App extends Component {
                             </Row>
                             <Row>
                                 <Col className="main-col-cards" sm={12}>
-                                    <Card style={{ height: "25vh" }}>
+                                    <Card style={{ height: "24vh" }}>
                                         <StackedBarchartType
                                             explosionsData={this.state.explosionsData}
                                             colorScale={this.colorScale}
@@ -154,7 +163,7 @@ class App extends Component {
                             </Row>
                         </Col>
                         <Col className="main-col-cards" sm={3}>
-                            <Card style={{ height: "50vh" }}>
+                            <Card style={{ height: "48vh" }}>
                                 <StackedHorizontalBarchartPurpose
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
@@ -166,7 +175,7 @@ class App extends Component {
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={6}>
-                            <Card style={{ height: "50vh" }}>
+                            <Card style={{ height: "48vh" }}>
                                 <WorldBubbleMap
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
@@ -178,7 +187,7 @@ class App extends Component {
                     </Row>
                     <Row>
                         <Col className="main-col-cards" sm={4}>
-                            <Card style={{ height: "49vh" }}>
+                            <Card style={{ height: "47vh" }}>
                                 <ExplosionsStackedAreaChart
                                     explosionsData={this.state.explosionsData}
                                     explosionsFeatures={this.state.explosionsFeatures}
@@ -190,7 +199,7 @@ class App extends Component {
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
-                            <Card style={{ height: "49vh" }}>
+                            <Card style={{ height: "47vh" }}>
                                 <ParallelCoordinatePlot
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
@@ -202,7 +211,7 @@ class App extends Component {
                             </Card>
                         </Col>
                         <Col className="main-col-cards" sm={4}>
-                            <Card style={{ height: "49vh" }}>
+                            <Card style={{ height: "47vh" }}>
                                 <InventoryMultiLineChart
                                     inventoryData={this.state.inventoryData}
                                     inventoryFeatures={this.state.inventoryFeatures}
@@ -214,9 +223,6 @@ class App extends Component {
                         </Col>
                     </Row>
                 </Container>
-                <Button variant="info" type="reset" className="btn-sq" onClick={() => this.resetFilters()}>
-                    Reset Filters
-                </Button>
             </div>
         );
     }

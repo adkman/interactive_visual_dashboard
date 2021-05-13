@@ -223,7 +223,7 @@ class InventoryStackedAreaChart extends Component {
             .attr("y", margin.top*2)
             .attr("dy", "-.25em")
             .attr("text-anchor", "middle")
-            .text("Predictions")
+            .text(LABEL.PREDICTIONS)
 
     }
 

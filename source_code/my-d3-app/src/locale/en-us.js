@@ -1,4 +1,5 @@
 export const LABEL = {
+    PAGE_HEADING: "NUCLEAR EXPLOSIONS IN THE WORLD",
     NUCLEAR_STOCKPILE: "Nuclear Stockpile (Sqrt)",
     YEAR: "Year",
     NUCLEAR_STOCKPILE_TREND: "Nuclear Stockpile Trend",
@@ -13,4 +14,6 @@ export const LABEL = {
     EXPLOSION_BY_PURPOSE: "Explosions by Purpose",
     EXPLOSION_BY_TYPE: "Explosions by Deployment Method",
     PARALLEL_COORDINATE_PLOT: "Parallel Coordinate Plot",
+    WORLD_MAP_TITLE: "World Map",
+    PREDICTIONS: "Predictions",
 }

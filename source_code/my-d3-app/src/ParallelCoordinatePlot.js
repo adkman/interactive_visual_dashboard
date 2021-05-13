@@ -38,8 +38,8 @@ class ParallelCoordinatePlot extends Component {
             colorScale,
             filter,
             addRangeFilter,
-            addToFilter,
-            removeFromFilter,
+            // addToFilter,
+            // removeFromFilter,
         } = this.props;
 
         const margin = ({ top: 40, right: 20, bottom: 20, left: 40 });

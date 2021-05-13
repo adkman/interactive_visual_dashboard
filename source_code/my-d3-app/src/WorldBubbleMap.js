@@ -5,6 +5,7 @@ import * as topojson from "topojson-client";
 import { Constants } from './constants/Constants';
 import countries_data from './data/countries-110m.json';
 import { getFilteredData } from './util';
+import { LABEL } from "./locale/en-us";
 
 class WorldBubbleMap extends Component {
 
@@ -178,6 +179,15 @@ class WorldBubbleMap extends Component {
 
             circles.attr("transform", d => `translate(${transform.apply(d.position)})`)
         }
+
+        svg.append("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 16)
+            .attr("font-weight", "bold")
+            .attr("x", this.width / 2)
+            .attr("y", 20)
+            .attr("text-anchor", "middle")
+            .text(LABEL.WORLD_MAP_TITLE)
 
     }
 
