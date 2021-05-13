@@ -59,7 +59,7 @@ class BarchartCountries extends Component {
             .padding(0);
 
         const yMax = d3.max(categorized_data, d => d['count']);
-        const yScale = d3.scaleSqrt()
+        const yScale = d3.scaleLinear()
             .domain([0, yMax])
             .range([this.height - margin.bottom, margin.top]);
 
@@ -69,7 +69,7 @@ class BarchartCountries extends Component {
             .attr("font-size", "10")
             .attr("text-anchor", "end");
 
-        this.drawAxes(svg, xScale, yScale, LABEL.COUNTRIES, LABEL.COUNTS_SQRT, this.height, this.width, margin, categorized_data.length);
+        this.drawAxes(svg, xScale, yScale, LABEL.COUNTRIES, LABEL.COUNTS, this.height, this.width, margin, categorized_data.length);
 
         svg.append("g")
             .selectAll("rect")
