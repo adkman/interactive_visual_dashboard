@@ -115,20 +115,60 @@ class WorldBubbleMap extends Component {
             .on("mouseover", function (e, d) {
                 d3.select(this)
                     .attr("fill-opacity", 1);
-                d3.select(this.parentNode)
-                    .append('text')
-                    .text(d.magnitude_body + " mb")
-                    .attr("x", d.position[0])
-                    .attr("y", d.position[1] + 30)
-                    .attr("font-size", "12")
+                let tooltipGroup = d3.select(this.parentNode)
+                    .append("g")
+                    .attr("font-size", "11")
                     .attr("font-weight", "bold")
-                    .attr("text-anchor", "middle")
-                    .attr("id", "temp_bubble_text")
+                    .attr("text-anchor", "start")
+                    .attr("class", "temp_bubble_text")
                     .attr("fill", colorScale(d.country));
+
+                tooltipGroup.append("rect")
+                    .attr("width", 200)
+                    .attr("height", 100)
+                    .attr("fill", colorScale(d.country))
+                    .attr("fill-opacity", 0.2);
+
+                tooltipGroup.append('text')
+                    .text("Region:  " + d.region)
+                    .attr("x", 10)
+                    .attr("y", 10);
+                tooltipGroup.append('text')
+                    .text("Source:  " + d.source)
+                    .attr("x", 10)
+                    .attr("y", 20);
+                tooltipGroup.append('text')
+                    .text("Magnitude body:  " + d.magnitude_body)
+                    .attr("x", 10)
+                    .attr("y", 30);
+                tooltipGroup.append('text')
+                    .text("Magnitude surface:  " + d.magnitude_surface)
+                    .attr("x", 10)
+                    .attr("y", 40);
+                tooltipGroup.append('text')
+                    .text("Depth:  " + d.depth)
+                    .attr("x", 10)
+                    .attr("y", 50);
+                tooltipGroup.append('text')
+                    .text("Yield (lower):  " + d.yield_lower)
+                    .attr("x", 10)
+                    .attr("y", 60);
+                tooltipGroup.append('text')
+                    .text("Yield (upper):  " + d.yield_upper)
+                    .attr("x", 10)
+                    .attr("y", 70);
+                tooltipGroup.append('text')
+                    .text("Purpose:  " + d.purpose)
+                    .attr("x", 10)
+                    .attr("y", 80);
+                tooltipGroup.append('text')
+                    .text("Type:  " + d.type)
+                    .attr("x", 10)
+                    .attr("y", 90);
             }).on("mouseout", function (e, d) {
                 d3.select(this)
                     .attr("fill-opacity", 0.25);
-                d3.select("#temp_bubble_text").remove();
+                d3.select(".temp_bubble_text").remove();
             });
 
         function zoomed(event) {
