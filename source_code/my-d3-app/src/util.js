@@ -42,6 +42,52 @@ export const getFilteredData = (data, filter, excludeFilter) => {
             isFiltered = false;
         }
 
+
+        if (
+            isFiltered &&
+            d.hasOwnProperty("magnitude_body") &&
+            filter.magnitude_body.length === 2 &&
+            !(d.magnitude_body >= filter.magnitude_body[0] && d.magnitude_body <= filter.magnitude_body[1])
+        ) {
+            isFiltered = false;
+        }
+
+        if (
+            isFiltered &&
+            d.hasOwnProperty("magnitude_surface") &&
+            filter.magnitude_surface.length === 2 &&
+            !(d.magnitude_surface >= filter.magnitude_surface[0] && d.magnitude_surface <= filter.magnitude_surface[1])
+        ) {
+            isFiltered = false;
+        }
+
+        if (
+            isFiltered &&
+            d.hasOwnProperty("depth") &&
+            filter.depth.length === 2 &&
+            !(d.depth >= filter.depth[0] && d.depth <= filter.depth[1])
+        ) {
+            isFiltered = false;
+        }
+
+        if (
+            isFiltered &&
+            d.hasOwnProperty("yeild_lower") &&
+            filter.yeild_lower.length === 2 &&
+            !(d.yeild_lower >= filter.yeild_lower[0] && d.yeild_lower <= filter.yeild_lower[1])
+        ) {
+            isFiltered = false;
+        }
+
+        if (
+            isFiltered &&
+            d.hasOwnProperty("yeild_upper") &&
+            filter.yeild_upper.length === 2 &&
+            !(d.yeild_upper >= filter.yeild_upper[0] && d.yeild_upper <= filter.yeild_upper[1])
+        ) {
+            isFiltered = false;
+        }
+
         return isFiltered;
     })
 }

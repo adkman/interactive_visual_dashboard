@@ -74,8 +74,6 @@ class StackedHorizontalBarchartPurpose extends Component {
             (data_grouped)
             .map(d => (d.forEach(v => v.key = d.key), d));
 
-        console.log("Stacked: Purpose data", data_stacked);
-
         const xMax = d3.max(data_stacked, d => d3.max(d, d => d[1]));
         const xScale = d3.scaleLinear()
             .domain([0, xMax])

@@ -36,7 +36,6 @@ class InventoryStackedAreaChart extends Component {
             inventoryData,
             inventoryFeatures,
             colorScale,
-            nuclearCountries,
             filter,
         } = this.props;
 
@@ -125,7 +124,7 @@ class InventoryStackedAreaChart extends Component {
             .attr("text-anchor", "middle")
             .text(LABEL.NUCLEAR_STOCKPILE_TREND)
 
-        const path = svg.append("g")
+        svg.append("g")
             .attr("fill", "none")
             .attr("stroke-width", 2)
             .attr("stroke-linejoin", "round")

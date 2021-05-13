@@ -32,6 +32,11 @@ class App extends Component {
                 type: new Set(),
                 purpose: new Set(),
                 yearRange: [1940, 2020],
+                magnitude_body: [],
+                magnitude_surface: [],
+                depth: [],
+                yeild_lower: [],
+                yeild_upper: [],
             }
         }
 
@@ -66,20 +71,18 @@ class App extends Component {
         let newFilter = Object.assign({}, this.state.filter)
         newFilter[key] = new Set(this.state.filter[key]);
         newFilter[key].add(value);
-        console.log("new filter", newFilter, this.state.filter);
+        console.log("key", key, "val", value, "new filter", newFilter, "old filter", this.state.filter);
         this.setState({
             filter: newFilter
         })
     }
 
-    addYearRangeFilter = (minVal, maxVal) => {
+    addRangeFilter = (key, value) => {
         let newFilter = Object.assign({}, this.state.filter)
-        if (this.state.filter["yearRange"][0] !== minVal || this.state.filter["yearRange"][1] !== maxVal) {
-            newFilter["yearRange"] = [0, 0];
-            newFilter["yearRange"][0] = minVal;
-            newFilter["yearRange"][1] = maxVal;
+        if (this.state.filter[key].length !== 2 || this.state.filter[key][0] !== value[0] || this.state.filter[key][1] !== value[1]) {
+            newFilter[key] = value.slice();
 
-            console.log("new filter", newFilter, this.state.filter);
+            console.log("key", key, "val", value, "new filter", newFilter, "old filter", this.state.filter);
             this.setState({
                 filter: newFilter
             })
@@ -107,6 +110,11 @@ class App extends Component {
                 type: new Set(),
                 purpose: new Set(),
                 yearRange: [1940, 2020],
+                magnitude_body: [],
+                magnitude_surface: [],
+                depth: [],
+                yeild_lower: [],
+                yeild_upper: [],
             }
         })
     }
@@ -177,7 +185,7 @@ class App extends Component {
                                     colorScale={this.colorScale}
                                     nuclearCountries={this.state.nuclearCountries}
                                     filter={this.state.filter}
-                                    addYearRangeFilter={this.addYearRangeFilter}
+                                    addRangeFilter={this.addRangeFilter}
                                 />
                             </Card>
                         </Col>
@@ -187,6 +195,9 @@ class App extends Component {
                                     explosionsData={this.state.explosionsData}
                                     colorScale={this.colorScale}
                                     filter={this.state.filter}
+                                    addRangeFilter={this.addRangeFilter}
+                                    addToFilter={this.addToFilter}
+                                    removeFromFilter={this.removeFromFilter}
                                 />
                             </Card>
                         </Col>

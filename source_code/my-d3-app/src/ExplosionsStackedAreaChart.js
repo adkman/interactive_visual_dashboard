@@ -26,6 +26,11 @@ class ExplosionsStackedAreaChart extends Component {
             || this.props.filter.country !== prevProps.filter.country
             || this.props.filter.type !== prevProps.filter.type
             || this.props.filter.purpose !== prevProps.filter.purpose
+            || this.props.filter.magnitude_body !== prevProps.filter.magnitude_body
+            || this.props.filter.magnitude_surface !== prevProps.filter.magnitude_surface
+            || this.props.filter.depth !== prevProps.filter.depth
+            || this.props.filter.yeild_lower !== prevProps.filter.yeild_lower
+            || this.props.filter.yeild_upper !== prevProps.filter.yeild_upper
         ) {
             const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -41,7 +46,7 @@ class ExplosionsStackedAreaChart extends Component {
             nuclearCountries,
             colorScale,
             filter,
-            addYearRangeFilter,
+            addRangeFilter,
         } = this.props;
 
         if (explosionsData.length === 0 || explosionsFeatures.length === 0) {
@@ -168,13 +173,11 @@ class ExplosionsStackedAreaChart extends Component {
 
             let minYear = Math.ceil(x.domain()[0])
             let maxYear = Math.floor(x.domain()[1])
-            addYearRangeFilter(minYear, maxYear);
+            addRangeFilter("yearRange", [minYear, maxYear]);
             y.domain([0, d3.max(series, d => d3.max(d, d => (d["data"]["Year"] >= minYear && d["data"]["Year"] <= maxYear) ? d[1] : 0))]).nice()
             Line_chart.selectAll(".area").attr("d", area);
             focus.select(".axis--x").call(xAxis);
             focus.select(".axis--y").call(yAxis);
-
-            console.log("year range", minYear, maxYear);
         }
 
         var zoom = d3.zoom()
@@ -192,7 +195,7 @@ class ExplosionsStackedAreaChart extends Component {
             context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
         }
 
-        var clip = svg.append("defs").append("svg:clipPath")
+        svg.append("defs").append("svg:clipPath")
             .attr("id", "clip")
             .append("svg:rect")
             .attr("width", this.width - margin.left - margin.right)

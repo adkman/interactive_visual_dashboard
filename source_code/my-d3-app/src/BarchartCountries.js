@@ -127,8 +127,7 @@ class BarchartCountries extends Component {
         yTitleTxt,
         height,
         width,
-        margin,
-        num_categories) => {
+        margin) => {
 
         const xAxis = g => g
             .attr("transform", `translate(0,${height - margin.bottom})`)
@@ -146,9 +145,7 @@ class BarchartCountries extends Component {
                     }
                 }))
             .selectAll("text")
-            // .attr("transform", `rotate(${deg})`)
             .attr("font-size", 12)
-        // .attr("text-anchor", anchor)
 
         const xTitle = g => g.append("text")
             .attr("font-family", "sans-serif")

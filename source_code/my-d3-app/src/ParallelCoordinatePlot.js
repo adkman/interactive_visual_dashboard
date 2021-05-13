@@ -22,7 +22,9 @@ class ParallelCoordinatePlot extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.explosionsData.length !== prevProps.explosionsData.length
             || this.props.explosionsData !== prevProps.explosionsData
-            || this.props.filter !== prevProps.filter
+            || this.props.filter.country !== prevProps.filter.country
+            || this.props.filter.purpose !== prevProps.filter.purpose
+            || this.props.filter.yearRange !== prevProps.filter.yearRange
         ) {
             const svg = d3.select("#" + Constants.PCP_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -31,11 +33,13 @@ class ParallelCoordinatePlot extends Component {
     }
 
     drawChart() {
-
         const {
             explosionsData,
             colorScale,
             filter,
+            addRangeFilter,
+            addToFilter,
+            removeFromFilter,
         } = this.props;
 
         const margin = ({ top: 40, right: 20, bottom: 20, left: 40 });
@@ -63,18 +67,18 @@ class ParallelCoordinatePlot extends Component {
                 name: "yield_upper",
                 type: Constants.NUMERICAL_FEATURE
             },
-            {
-                name: "purpose",
-                type: Constants.CATEGORICAL_FEATURE
-            },
+            // {
+            //     name: "purpose",
+            //     type: Constants.CATEGORICAL_FEATURE
+            // },
             {
                 name: "type",
                 type: Constants.CATEGORICAL_FEATURE
             },
-            {
-                name: "source",
-                type: Constants.CATEGORICAL_FEATURE
-            },
+            // {
+            //     name: "source",
+            //     type: Constants.CATEGORICAL_FEATURE
+            // },
         ];
 
         const xScale = d3.scalePoint()
@@ -227,11 +231,20 @@ class ParallelCoordinatePlot extends Component {
             let key = dim.name;
             if (selection === null) {
                 selections.delete(key);
+                if (dim.type === Constants.NUMERICAL_FEATURE) {
+                    addRangeFilter(key, []);
+                // } else {
+                //     if (!!selections.get(key)) {
+                //         removeFromFilter(key, selections.get(key)[0]);
+                //     }
+                }
             } else {
                 if (dim.type === Constants.NUMERICAL_FEATURE) {
                     selections.set(key, selection.map(yScales.get(key).invert));
+                    addRangeFilter(key, selections.get(key).slice().reverse());
                 } else {
                     selections.set(key, selection.map(scaleBandInvert(yScales.get(key))));
+                    // addToFilter(key, selections.get(key)[0]);
                 }
             }
             const selected = [];
