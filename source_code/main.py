@@ -23,6 +23,7 @@ pcs = ['PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6',
 nuclear_explosions_dataset_path = "data/nuclear_explosions.csv"
 nuclear_inventory_dataset_path = "data/nuclear_inventory.csv"
 
+year_label = "Year"
 
 def load_data(csv_path):
     raw_data_df = pd.read_csv(csv_path)
@@ -104,8 +105,39 @@ def index():
 
 @app.route('/data_info')
 def data_info():
+
     explosions_data_df, explosions_data_features = load_data(nuclear_explosions_dataset_path)
     inventory_data_df, inventory_data_features = load_data(nuclear_inventory_dataset_path)
+
+    predicted_dict = {}
+    years_to_predict = 15
+
+    years = inventory_data_df[year_label].tolist()[-1]
+    predicted_values = []
+
+    for i in range(years+1, years+years_to_predict+1):
+        predicted_values.append(i)
+    predicted_dict[year_label] = predicted_values
+
+    for country in inventory_data_features[1:]:
+        train_on_last_years = 8
+        predicted_values = []
+        X = inventory_data_df[year_label].tolist()
+        y = inventory_data_df[country].tolist()
+
+        rate = (y[-1] - y[-train_on_last_years])/train_on_last_years
+        prev = y[-1]
+        pred = []
+
+        for i in range(years_to_predict):
+            curr = prev+rate
+            pred.append(curr)
+            prev = curr
+
+        predicted_dict[country] = pred
+
+    predicted_inventory_data = pd.DataFrame(predicted_dict)
+    inventory_data_df = inventory_data_df.append(predicted_inventory_data, ignore_index=True)
 
     return {
         'explosionsFeatures': explosions_data_features.tolist(),

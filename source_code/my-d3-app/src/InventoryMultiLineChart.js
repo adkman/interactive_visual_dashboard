@@ -209,6 +209,22 @@ class InventoryStackedAreaChart extends Component {
         svg.append('g')
             .call(yGrid)
 
+        svg.append("rect")
+            .attr("x", x(2014))
+            .attr("y", margin.top)
+            .attr("width", this.width - x(2014) - margin.right)
+            .attr("height", this.height - margin.top - margin.bottom)
+            .style("fill-opacity", 0.09)
+
+        svg.append("text")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 14)
+            .attr("x", x(2014) + (this.width - x(2014) - margin.right)/2)
+            .attr("y", margin.top*2)
+            .attr("dy", "-.25em")
+            .attr("text-anchor", "middle")
+            .text("Predictions")
+
     }
 
     render() {
