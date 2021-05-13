@@ -45,7 +45,7 @@ class App extends Component {
 
         this.colorScale = d3.scaleOrdinal()
             .domain(this.state.nuclearCountries)
-            .range(d3.schemeSet2)
+            .range(d3.schemeCategory10)
     }
 
     componentDidMount() {
@@ -65,7 +65,7 @@ class App extends Component {
 
                     this.colorScale = d3.scaleOrdinal()
                         .domain(nuclearCountries)
-                        .range(d3.schemeSet2)
+                        .range(d3.schemeCategory10)
                 }
             )
     }
