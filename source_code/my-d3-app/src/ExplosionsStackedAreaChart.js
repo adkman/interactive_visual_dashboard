@@ -95,7 +95,8 @@ class ExplosionsStackedAreaChart extends Component {
             .nice()
 
         const x2 = d3.scaleLinear()
-            .domain(d3.extent(data, d => d.Year))
+            // .domain(d3.extent(data, d => d.Year))
+            .domain([1940,2020])
             .range([margin.left, this.width - margin.right])
 
         const y = d3.scaleLinear()
@@ -217,7 +218,7 @@ class ExplosionsStackedAreaChart extends Component {
             .attr("viewBox", [0, 0, this.width, this.height2])
             .attr("transform", "translate(" + 0 + "," + 140 + ")");
 
-        x2.domain(x.domain());
+        // x2.domain(x.domain());
         y2.domain(y.domain());
 
         focus.append("g")
