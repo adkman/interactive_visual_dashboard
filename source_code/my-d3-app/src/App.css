@@ -52,3 +52,12 @@ body{
   padding-right: 1px !important;
   padding-left: 1px !important;
 }
+
+.btn-sq {
+  width: 50px !important;
+  height: 50px !important;
+  font-size: 0.72rem !important;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}

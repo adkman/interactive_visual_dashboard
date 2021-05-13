@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { Component } from 'react';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -99,6 +100,17 @@ class App extends Component {
         })
     }
 
+    resetFilters = () => {
+        this.setState({
+            filter: {
+                country: new Set(),
+                type: new Set(),
+                purpose: new Set(),
+                yearRange: [1940, 2020],
+            }
+        })
+    }
+
     render() {
         return (
             <div style={{ height: "100vh" }}>
@@ -191,6 +203,9 @@ class App extends Component {
                         </Col>
                     </Row>
                 </Container>
+                <Button variant="info" type="reset" className="btn-sq" onClick={() => this.resetFilters()}>
+                    Reset Filters
+                </Button>
             </div>
         );
     }
