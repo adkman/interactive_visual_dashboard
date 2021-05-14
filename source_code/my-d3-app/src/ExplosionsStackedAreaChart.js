@@ -5,6 +5,13 @@ import { Constants } from './constants/Constants';
 import { LABEL } from './locale/en-us';
 import { getFilteredData } from './util';
 
+// const events = [
+//     {
+//         "year": 1960,
+//         "event": "sample text sample text",
+//     },
+// ]
+
 class ExplosionsStackedAreaChart extends Component {
 
     width;
@@ -29,8 +36,8 @@ class ExplosionsStackedAreaChart extends Component {
             || this.props.filter.magnitude_body !== prevProps.filter.magnitude_body
             || this.props.filter.magnitude_surface !== prevProps.filter.magnitude_surface
             || this.props.filter.depth !== prevProps.filter.depth
-            || this.props.filter.yeild_lower !== prevProps.filter.yeild_lower
-            || this.props.filter.yeild_upper !== prevProps.filter.yeild_upper
+            || this.props.filter.yield_lower !== prevProps.filter.yield_lower
+            || this.props.filter.yield_upper !== prevProps.filter.yield_upper
         ) {
             const svg = d3.select("#" + Constants.EXPLOSIONS_STACKED_AREA_CHART_SVG_CONTAINER_ID).select("svg");
             svg.remove();
@@ -268,6 +275,19 @@ class ExplosionsStackedAreaChart extends Component {
             .attr("height", this.height1 - margin.top - margin.bottom)
             .style("fill-opacity", 0)
             .call(zoom);
+
+        // svg.append("g")
+        //     .selectAll("text")
+        //     .data(events)
+        //     .join("text")
+        //     .attr("font-family", "sans-serif")
+        //     .attr("font-size", 14)
+        //     .attr("x", -(this.height - margin.bottom) / 2)
+        //     .attr("y", d => x(d.year))
+        //     .attr("text-anchor", "middle")
+        //     .attr("transform", "rotate(-90)")
+        //     .attr("text-anchor", "middle")
+        //     .text(d => d.event)
 
     }
 

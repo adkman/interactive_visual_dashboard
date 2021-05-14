@@ -72,18 +72,18 @@ export const getFilteredData = (data, filter, excludeFilter) => {
 
         if (
             isFiltered &&
-            d.hasOwnProperty("yeild_lower") &&
-            filter.yeild_lower.length === 2 &&
-            !(d.yeild_lower >= filter.yeild_lower[0] && d.yeild_lower <= filter.yeild_lower[1])
+            d.hasOwnProperty("yield_lower") &&
+            filter.yield_lower.length === 2 &&
+            !(d.yield_lower >= filter.yield_lower[0] && d.yield_lower <= filter.yield_lower[1])
         ) {
             isFiltered = false;
         }
 
         if (
             isFiltered &&
-            d.hasOwnProperty("yeild_upper") &&
-            filter.yeild_upper.length === 2 &&
-            !(d.yeild_upper >= filter.yeild_upper[0] && d.yeild_upper <= filter.yeild_upper[1])
+            d.hasOwnProperty("yield_upper") &&
+            filter.yield_upper.length === 2 &&
+            !(d.yield_upper >= filter.yield_upper[0] && d.yield_upper <= filter.yield_upper[1])
         ) {
             isFiltered = false;
         }

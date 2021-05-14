@@ -38,8 +38,8 @@ class App extends Component {
                 magnitude_body: [],
                 magnitude_surface: [],
                 depth: [],
-                yeild_lower: [],
-                yeild_upper: [],
+                yield_lower: [],
+                yield_upper: [],
             }
         }
 
